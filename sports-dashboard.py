@@ -158,5 +158,72 @@ st.subheader('Daily Walks Guide')
 st.dataframe(walks)
 ##################################################
 
+##################################################
+# MLB Daily Ks
+##################################################
+daily_k = daily_df_2[['Pitcher', 'Opponent', 'Out/G', 'K%', 'SwStr%', 'Team_K%']]
+
+daily_k_over = daily_k[(daily_k['K%'] >= 50) & (daily_k['SwStr%'] >= 50) & (daily_k['Team_K%'] >= 50)] \
+    .sort_values(by=['K%', 'SwStr%', 'Team_K%'], ascending=[False, False, False]).reset_index(drop=True)
+daily_k_over['Bet'] = 'OVER'
+
+daily_k_under = daily_k[(daily_k['K%'] < 50) & (daily_k['SwStr%'] < 50) & (daily_k['Team_K%'] < 50)] \
+    .sort_values(by=['K%', 'SwStr%', 'Team_K%'], ascending=[False, False, False]).reset_index(drop=True)
+daily_k_under['Bet'] = 'UNDER'
+
+#concat over and under
+strikeouts = pd.concat([daily_k_over, daily_k_under], ignore_index=True)
+st.subheader('Daily Strikeouts Guide')
+st.dataframe(walks)
+##################################################
+
+##################################################
+# MLB Daily Outs
+##################################################
+daily_out = daily_df_2[['Pitcher', 'Opponent', 'Out/G', 'P/PA','Team_Swing%']]
+
+daily_out_over = daily_out[(daily_out['Out/G'] >= 75) & (daily_out['P/PA'] >= 50) & (daily_out['Team_Swing%'] >= 50)] \
+    .sort_values(by=['Out/G', 'P/PA', 'Team_Swing%'], ascending=[False, False, False]).reset_index(drop=True)
+daily_out_over['Bet'] = 'OVER'
+
+daily_out_under = daily_out[(daily_out['Out/G'] < 50) & (daily_out['P/PA'] < 50) & (daily_out['Team_Swing%'] < 50)] \
+    .sort_values(by=['Out/G', 'P/PA', 'Team_Swing%'], ascending=[False, False, False]).reset_index(drop=True)
+daily_out_under['Bet'] = 'UNDER'
+
+#concat over and under
+outs = pd.concat([daily_out_over, daily_out_under], ignore_index=True)
+st.subheader('Daily Outs Guide')
+st.dataframe(outs)
+##################################################
+
+##################################################
+# MLB Daily Homeruns
+##################################################
+homeruns = daily_df_2[['Pitcher', 'Opponent', 'HR/9', 'HardHit%', 'FB%']] \
+    .sort_values(by=['HR/9', 'HardHit%', 'FB%'], ascending=[False, False, False]).reset_index(drop=True)
+##CONDITIONS
+homer_per_nine_cond = homeruns['HR/9'] >= 1.8
+hardhit_percent = homeruns['HardHit%'] >= 0.44
+flyball_percent = homeruns['FB%'] >= 0.40
+
+# Combine into a DataFrame of booleans
+hr_conditions = pd.DataFrame([homer_per_nine_cond, hardhit_percent, flyball_percent]).T
+
+# Filter rows where at least 2 conditions are True
+filtered_hrs = pd.DataFrame(homeruns[hr_conditions.sum(axis=1) >= 2], columns=homeruns.columns)
+st.subheader('Daily HR Targets')
+st.dataframe(filtered_hrs)
+##################################################
+
+##################################################
+# Full output
+##################################################
+st.subheader('Daily Walks (Full output)')
+st.dataframe(daily_bb.sort_values(by=['BB%', 'Team_BB%'], ascending=[True, True]).reset_index(drop=True))
+st.subheader('Daily Ks (Full output)')
+st.dataframe(daily_k.sort_values(by=['K%', 'SwStr%', 'Team_K%'], ascending=[False, False, False]).reset_index(drop=True))
+st.subheader('Daily Outs (Full output)')
+st.dataframe(daily_out.sort_values(by=['Out/G', 'P/PA', 'Team_Swing%'], ascending=[False, False, False]))
+##################################################
 
 st.write("© Andrew Scheiner 2025")
