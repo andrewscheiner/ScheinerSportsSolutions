@@ -174,7 +174,7 @@ daily_k_under['Bet'] = 'UNDER'
 #concat over and under
 strikeouts = pd.concat([daily_k_over, daily_k_under], ignore_index=True)
 st.subheader('Daily Strikeouts Guide')
-st.dataframe(walks)
+st.dataframe(strikeouts)
 ##################################################
 
 ##################################################
