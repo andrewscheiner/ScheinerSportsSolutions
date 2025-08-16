@@ -186,7 +186,7 @@ daily_out_over = daily_out[(daily_out['Out/G'] >= 75) & (daily_out['P/PA'] >= 50
     .sort_values(by=['Out/G', 'P/PA', 'Team_Swing%'], ascending=[False, False, False]).reset_index(drop=True)
 daily_out_over['Bet'] = 'OVER'
 
-daily_out_under = daily_out[(daily_out['Out/G'] < 50) & (daily_out['P/PA'] < 50) & (daily_out['Team_Swing%'] < 50)] \
+daily_out_under = daily_out[(daily_out['Out/G'] <= 67) & (daily_out['P/PA'] < 50) & (daily_out['Team_Swing%'] < 50)] \
     .sort_values(by=['Out/G', 'P/PA', 'Team_Swing%'], ascending=[False, False, False]).reset_index(drop=True)
 daily_out_under['Bet'] = 'UNDER'
 
