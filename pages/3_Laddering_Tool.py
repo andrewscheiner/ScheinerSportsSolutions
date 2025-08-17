@@ -86,4 +86,5 @@ if len(wagers) == len(intervals):
     st.markdown(f"**Total Bet:** ${sum(wagers):.2f}")
     st.markdown(f"**Total Potential Winnings:** ${sum([w for w in winnings.values()]):.2f}")
 
+st.markdown('Disclaimer: The odds shown are the **assumed** odds, not the actual odds that are being offered by sportsbooks.')
 st.markdown('Nerd Note: For the laddering model, I use a log-normal distribution with a sigma value of 0.5.')
