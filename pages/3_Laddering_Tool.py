@@ -46,7 +46,7 @@ st.header("Ladder Parameters")
 
 # User inputs
 stat_per_game = st.number_input("Average Stat per Game", min_value=0.1, value=10.2, step=0.1)
-sigma = st.number_input("Log-Normal Std Dev (σ)", min_value=0.01, value=0.5, step=0.01)
+#sigma = st.number_input("Log-Normal Std Dev (σ)", min_value=0.01, value=0.5, step=0.01)
 
 # Intervals input
 intervals = st.text_input(
@@ -58,7 +58,7 @@ intervals = [float(x.strip()) for x in intervals.split(",") if x.strip()]
 # Bet sizes input
 default_bets = ", ".join([str(x) for x in get_wager_ladder(len(intervals))])
 bet_sizes = st.text_input(
-    "Bet Sizes for Each Interval (comma-separated)", 
+    "Bet Sizes (USD) for Each Interval (comma-separated)", 
     value=default_bets
 )
 wagers = [float(x.strip()) for x in bet_sizes.split(",") if x.strip()]
@@ -69,7 +69,7 @@ if len(wagers) != len(intervals):
 mu = np.log(stat_per_game)
 
 # Calculate odds and winnings
-results = {k: prob_gte_k_lognorm(k, mu, sigma) for k in intervals}
+results = {k: prob_gte_k_lognorm(k, mu, 0.5) for k in intervals}
 winnings = calculate_winnings(results, wagers) if len(wagers) == len(intervals) else {}
 
 # Display results
@@ -85,3 +85,5 @@ st.dataframe(df, use_container_width=True)
 if len(wagers) == len(intervals):
     st.markdown(f"**Total Bet:** ${sum(wagers):.2f}")
     st.markdown(f"**Total Potential Winnings:** ${sum([w for w in winnings.values()]):.2f}")
+
+st.markdown('Nerd Note: For the laddering model, I use a log-normal distribution with a sigma value of 0.5.')
