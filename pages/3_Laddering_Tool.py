@@ -1,6 +1,7 @@
 import streamlit as st
 from scipy.stats import lognorm
 import numpy as np
+import pandas as pd
 
 st.title("🪜 Laddering Tool")
 st.markdown("Build and visualize progressive betting ladders to optimize risk and reward.")
@@ -39,18 +40,48 @@ def get_wager_ladder(num_bets, starting_bets=[10, 7.5, 5]):
         values.append(next_value)
     return values
 
-# Parameters for Log-Normal Distribution
-stat_per_game = 10.2  # Average stat per game
-mu = np.log(stat_per_game)  # Log of the mean
-sigma = 0.5     # Standard deviation (can be tuned)
-intervals = [stat_per_game-2] + [stat_per_game] + [12, 13, 15, 18, 20, 25]
+# Streamlit UI for Laddering Tool
 
-# Example: Find P(X ≥ 12), P(X ≥ 15), P(X ≥ 20), P(X ≥ 25)
+st.header("Ladder Parameters")
+
+# User inputs
+stat_per_game = st.number_input("Average Stat per Game", min_value=0.1, value=10.2, step=0.1)
+sigma = st.number_input("Log-Normal Std Dev (σ)", min_value=0.01, value=0.5, step=0.01)
+
+# Intervals input
+intervals = st.text_input(
+    "Stat Intervals (comma-separated)", 
+    value="8,10.2,12,13,15,18,20,25"
+)
+intervals = [float(x.strip()) for x in intervals.split(",") if x.strip()]
+
+# Bet sizes input
+default_bets = ", ".join([str(x) for x in get_wager_ladder(len(intervals))])
+bet_sizes = st.text_input(
+    "Bet Sizes for Each Interval (comma-separated)", 
+    value=default_bets
+)
+wagers = [float(x.strip()) for x in bet_sizes.split(",") if x.strip()]
+if len(wagers) != len(intervals):
+    st.warning("Number of bet sizes must match number of intervals.")
+
+# Calculate log-normal parameters
+mu = np.log(stat_per_game)
+
+# Calculate odds and winnings
 results = {k: prob_gte_k_lognorm(k, mu, sigma) for k in intervals}
-print(f"Results: {results}")
+winnings = calculate_winnings(results, wagers) if len(wagers) == len(intervals) else {}
 
-wagers = get_wager_ladder(len(results)) 
-print(f"Wagers: {wagers}, Sum: {sum(wagers)}")
+# Display results
+st.subheader("Ladder Results")
+df = pd.DataFrame({
+    "Interval (Stat ≥)": intervals,
+    "American Odds": [results[k] for k in intervals],
+    "Bet Size": wagers if len(wagers) == len(intervals) else [""]*len(intervals),
+    "Potential Winnings": [winnings.get(k, "") for k in intervals]
+})
+st.dataframe(df, use_container_width=True)
 
-winnings = calculate_winnings(results, wagers)
-print(f"Winnings: {winnings}, Sum: {sum(winnings.values())}")
+if len(wagers) == len(intervals):
+    st.markdown(f"**Total Bet:** ${sum(wagers):.2f}")
+    st.markdown(f"**Total Potential Winnings:** ${sum([w for w in winnings.values()]):.2f}")
