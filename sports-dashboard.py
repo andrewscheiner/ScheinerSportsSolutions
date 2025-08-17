@@ -6,7 +6,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded")
 
-st.sidebar.title("Home")
 st.set_page_config(page_title="Andrew Scheiner's Sports Dashboard", page_icon=":trophy:", layout="wide")
 
 st.title('Scheiner Sports Solutions')
