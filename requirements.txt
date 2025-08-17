@@ -5,3 +5,4 @@ pybaseball
 MLB-StatsAPI
 scipy
 openpyxl
+numpy
