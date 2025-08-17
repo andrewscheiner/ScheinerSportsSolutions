@@ -154,6 +154,8 @@ daily_bb_under['Bet'] = 'UNDER'
 
 #concat over and under
 walks = pd.concat([daily_bb_over, daily_bb_under], ignore_index=True)
+st.subheader('Daily Walks Guide')
+st.dataframe(walks)
 ##################################################
 
 ##################################################
@@ -171,6 +173,8 @@ daily_k_under['Bet'] = 'UNDER'
 
 #concat over and under
 strikeouts = pd.concat([daily_k_over, daily_k_under], ignore_index=True)
+st.subheader('Daily Strikeouts Guide')
+st.dataframe(strikeouts)
 ##################################################
 
 ##################################################
@@ -188,6 +192,8 @@ daily_out_under['Bet'] = 'UNDER'
 
 #concat over and under
 outs = pd.concat([daily_out_over, daily_out_under], ignore_index=True)
+st.subheader('Daily Outs Guide')
+st.dataframe(outs)
 ##################################################
 
 ##################################################
@@ -205,28 +211,19 @@ hr_conditions = pd.DataFrame([homer_per_nine_cond, hardhit_percent, flyball_perc
 
 # Filter rows where at least 2 conditions are True
 filtered_hrs = pd.DataFrame(homeruns[hr_conditions.sum(axis=1) >= 2], columns=homeruns.columns)
+st.subheader('Daily HR Targets')
+st.dataframe(filtered_hrs)
 ##################################################
 
 ##################################################
-# Tabbed output
+# Full output
 ##################################################
-# Dictionary to map names to DataFrames
-datasets = {
-    "Daily Walks Guide": walks,
-    "Daily Strikeouts Guide": strikeouts,
-    "Daily Outs Guide": outs,
-    "Daily HR Targets": filtered_hrs,
-    "Daily Walks (Full output)": daily_bb.sort_values(by=['BB%', 'Team_BB%'], ascending=[True, True]).reset_index(drop=True),
-    "Daily Ks (Full output)": daily_k.sort_values(by=['K%', 'SwStr%', 'Team_K%'], ascending=[False, False, False]).reset_index(drop=True),
-    "Daily Outs (Full output)": daily_out.sort_values(by=['Out/G', 'P/PA', 'Team_Swing%'], ascending=[False, False, False])
-}
-
-# Selectbox for choosing dataset
-selected_dataset = st.selectbox("Pitcher prop", list(datasets.keys()))
-
-# Display the selected DataFrame
-st.subheader(f"{selected_dataset}")
-st.dataframe(datasets[selected_dataset])
+st.subheader('Daily Walks (Full output)')
+st.dataframe(daily_bb.sort_values(by=['BB%', 'Team_BB%'], ascending=[True, True]).reset_index(drop=True))
+st.subheader('Daily Ks (Full output)')
+st.dataframe(daily_k.sort_values(by=['K%', 'SwStr%', 'Team_K%'], ascending=[False, False, False]).reset_index(drop=True))
+st.subheader('Daily Outs (Full output)')
+st.dataframe(daily_out.sort_values(by=['Out/G', 'P/PA', 'Team_Swing%'], ascending=[False, False, False]))
 ##################################################
 
 ##################################################
