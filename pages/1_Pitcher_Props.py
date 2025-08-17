@@ -23,7 +23,6 @@ st.set_page_config(page_title="Pitcher Props", page_icon="⚾", layout="wide")
 st.title("⚾ Pitcher Props")
 st.markdown("Analyze pitcher performance and identify prop bet opportunities.")
 
-
 ##################################################
 # MLB Daily Pitcher Props
 ##################################################
