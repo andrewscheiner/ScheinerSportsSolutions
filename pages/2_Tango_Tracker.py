@@ -4,7 +4,7 @@ import pybaseball as pyb
 import pandas as pd
 
 st.title("🔍 Tango Tracker")
-st.markdown("Track player movement, trends, and game-by-game performance shifts.")
+st.markdown("Continually track the MLB CY Young Award Race using Tom Tango's successful formula.")
 
 ##################################################
 # Tango CY Young Tracker

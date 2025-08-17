@@ -21,7 +21,7 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 st.set_page_config(page_title="Pitcher Props", page_icon="⚾", layout="wide")
 
 st.title("⚾ Pitcher Props")
-st.markdown("Analyze pitcher performance and identify prop bet opportunities.")
+st.markdown("Analyze underlying pitching metrics and identify prop bet opportunities.")
 
 ##################################################
 # MLB Daily Pitcher Props
