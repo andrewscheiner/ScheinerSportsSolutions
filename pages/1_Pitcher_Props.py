@@ -129,23 +129,6 @@ for col in daily_df_2.select_dtypes(include='number').columns:
 daily_df_2 = daily_df_2.reset_index(drop=True)
 
 ##################################################
-# MLB Daily Walks
-##################################################
-daily_bb = daily_df_2[['Pitcher', 'Opponent', 'IP', 'BB%', 'Ball%', 'Team_BB%']]
-
-daily_bb_over = daily_bb[(daily_bb['BB%'] <= 50) & (daily_bb['Ball%'] <= 75) & (daily_bb['Team_BB%'] >= 50)] \
-    .sort_values(by=['BB%', 'Team_BB%'], ascending=[True, True]).reset_index(drop=True)
-daily_bb_over['Bet'] = 'OVER'
-
-daily_bb_under = daily_bb[(daily_bb['BB%'] > 50) & (daily_bb['Ball%'] > 75) & (daily_bb['Team_BB%'] < 50)] \
-    .sort_values(by=['BB%', 'Team_BB%'], ascending=[True, True]).reset_index(drop=True)
-daily_bb_under['Bet'] = 'UNDER'
-
-#concat over and under
-walks = pd.concat([daily_bb_over, daily_bb_under], ignore_index=True)
-##################################################
-
-##################################################
 # MLB Daily Ks
 ##################################################
 daily_k = daily_df_2[['Pitcher', 'Opponent', 'Out/G', 'K%', 'SwStr%', 'Team_K%']]
@@ -160,6 +143,23 @@ daily_k_under['Bet'] = 'UNDER'
 
 #concat over and under
 strikeouts = pd.concat([daily_k_over, daily_k_under], ignore_index=True)
+##################################################
+
+##################################################
+# MLB Daily Walks
+##################################################
+daily_bb = daily_df_2[['Pitcher', 'Opponent', 'IP', 'BB%', 'Ball%', 'Team_BB%']]
+
+daily_bb_over = daily_bb[(daily_bb['BB%'] <= 50) & (daily_bb['Ball%'] <= 75) & (daily_bb['Team_BB%'] >= 50)] \
+    .sort_values(by=['BB%', 'Team_BB%'], ascending=[True, True]).reset_index(drop=True)
+daily_bb_over['Bet'] = 'OVER'
+
+daily_bb_under = daily_bb[(daily_bb['BB%'] > 50) & (daily_bb['Ball%'] > 75) & (daily_bb['Team_BB%'] < 50)] \
+    .sort_values(by=['BB%', 'Team_BB%'], ascending=[True, True]).reset_index(drop=True)
+daily_bb_under['Bet'] = 'UNDER'
+
+#concat over and under
+walks = pd.concat([daily_bb_over, daily_bb_under], ignore_index=True)
 ##################################################
 
 ##################################################
@@ -201,12 +201,12 @@ filtered_hrs = pd.DataFrame(homeruns[hr_conditions.sum(axis=1) >= 2], columns=ho
 ##################################################
 # Dictionary to map names to DataFrames
 datasets = {
-    "Daily Walks Guide": walks,
     "Daily Strikeouts Guide": strikeouts,
+    "Daily Walks Guide": walks,
     "Daily Outs Guide": outs,
     "Daily HR Targets": filtered_hrs,
-    "Daily Walks (Full output)": daily_bb.sort_values(by=['BB%', 'Team_BB%'], ascending=[True, True]).reset_index(drop=True),
     "Daily Ks (Full output)": daily_k.sort_values(by=['K%', 'SwStr%', 'Team_K%'], ascending=[False, False, False]).reset_index(drop=True),
+    "Daily Walks (Full output)": daily_bb.sort_values(by=['BB%', 'Team_BB%'], ascending=[True, True]).reset_index(drop=True),
     "Daily Outs (Full output)": daily_out.sort_values(by=['Out/G', 'P/PA', 'Team_Swing%'], ascending=[False, False, False])
 }
 
