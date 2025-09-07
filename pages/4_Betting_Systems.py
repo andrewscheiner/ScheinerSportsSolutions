@@ -163,8 +163,12 @@ elif filter_option == "Between (a <= x <= b)":
         ]
     title = f'Betting and Game Results - Spreads between {spread_min} and {spread_max}'
        
-bettingResult_vc = oddsData_plot[["Favorite Covered","Favorite Won Outright","Underdog Covered","Underdog Outright"]].value_counts()
-bettingResult_vc_df = pd.DataFrame(bettingResult_vc).reset_index()
+try:
+    bettingResult_vc = oddsData_plot[["Favorite Covered","Favorite Won Outright","Underdog Covered","Underdog Outright"]].value_counts()
+    bettingResult_vc_df = pd.DataFrame(bettingResult_vc).reset_index()
+except:
+    st.warning("Please select a spread filter and click 'Update Results' to see the graph.")
+    st.stop()
 
 # Map each result row to a label based on the conditions
 def get_label(row):
