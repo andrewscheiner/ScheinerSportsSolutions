@@ -122,6 +122,8 @@ oddsData_final['Underdog Outright'] = oddsData_final.apply(dogOutright, axis=1)
 #total over?
 oddsData_final['TotalOver'] = ((oddsData_final['HomeScore'] + oddsData_final['AwayScore']) > \
                                 oddsData_final['PreFlopTotal'])*1
+#get abs value spread
+oddsData_final['PositiveSpread'] = oddsData_final["HomeSpread"].abs()
 
 # Streamlit UI for spread filter
 filter_option = st.radio(
@@ -135,7 +137,6 @@ if filter_option == "Less than or equal to (<=)":
         min_value=0, max_value=20, value=4, step=1
     )
     if st.button('Update Results'):
-        oddsData_final['PositiveSpread'] = oddsData_final["HomeSpread"].abs()
         oddsData_plot = oddsData_final[oddsData_final['PositiveSpread'] <= spreadFilter]
 
 elif filter_option == "Equal to (==)":
@@ -144,7 +145,6 @@ elif filter_option == "Equal to (==)":
         min_value=0, max_value=20, value=4, step=1
     )
     if st.button('Update Results'):
-        oddsData_final['PositiveSpread'] = oddsData_final["HomeSpread"].abs()
         oddsData_plot = oddsData_final[oddsData_final['PositiveSpread'] == spreadFilter_eq]
 
 elif filter_option == "Between (a <= x <= b)":
@@ -153,55 +153,56 @@ elif filter_option == "Between (a <= x <= b)":
         min_value=0, max_value=20, value=(2, 6), step=1
     )
     if st.button('Update Results'):
-        oddsData_final['PositiveSpread'] = oddsData_final["HomeSpread"].abs()
         oddsData_plot = oddsData_final[
             (oddsData_final['PositiveSpread'] >= spread_min) &
             (oddsData_final['PositiveSpread'] <= spread_max)
         ]
-bettingResult_vc = oddsData_plot[["Favorite Covered","Favorite Won Outright","Underdog Covered","Underdog Outright"]].value_counts()
-bettingResult_vc_df = pd.DataFrame(bettingResult_vc).reset_index()
+       
+if st.button('Update Results'): 
+    bettingResult_vc = oddsData_plot[["Favorite Covered","Favorite Won Outright","Underdog Covered","Underdog Outright"]].value_counts()
+    bettingResult_vc_df = pd.DataFrame(bettingResult_vc).reset_index()
 
-# Map each result row to a label based on the conditions
-def get_label(row):
-    vals = row[['Favorite Covered', 'Favorite Won Outright', 'Underdog Covered', 'Underdog Outright']].tolist()
-    if vals == [1, 1, 0, 0]:
-        return 'Favorite Covered'
-    elif vals == [0, 0, 1, 1]:
-        return 'Underdog Won'
-    elif vals == [0, 1, 1, 0]:
-        return 'Favorite Won, Dog Covered'
-    elif vals == [-1, -1, -1, -1]:
-        return 'Pick-Em'
-    elif vals == [0, 1, 0, 0]:
-        return 'Push'
-    else:
-        return str(vals)
+    # Map each result row to a label based on the conditions
+    def get_label(row):
+        vals = row[['Favorite Covered', 'Favorite Won Outright', 'Underdog Covered', 'Underdog Outright']].tolist()
+        if vals == [1, 1, 0, 0]:
+            return 'Favorite Covered'
+        elif vals == [0, 0, 1, 1]:
+            return 'Underdog Won'
+        elif vals == [0, 1, 1, 0]:
+            return 'Favorite Won, Dog Covered'
+        elif vals == [-1, -1, -1, -1]:
+            return 'Pick-Em'
+        elif vals == [0, 1, 0, 0]:
+            return 'Push'
+        else:
+            return str(vals)
 
-new_labels = bettingResult_vc_df.apply(get_label, axis=1)
+    new_labels = bettingResult_vc_df.apply(get_label, axis=1)
 
-# Plot game results based on filtered spread
-fig, ax = plt.subplots()
-bettingResult_vc.plot(kind="bar", ax=ax)
+    # Plot game results based on filtered spread
+    fig, ax = plt.subplots()
+    bettingResult_vc.plot(kind="bar", ax=ax)
 
-# Calculate percentages
-total = bettingResult_vc.sum()
-percentages = (bettingResult_vc / total * 100).round(2)
+    # Calculate percentages
+    total = bettingResult_vc.sum()
+    percentages = (bettingResult_vc / total * 100).round(2)
 
-# Add data labels and percentages on bars
-for i, (count, pct) in enumerate(zip(bettingResult_vc, percentages)):
-    ax.text(i, count + total * 0.01, f"{count}\n({pct}%)", ha='center', va='bottom', fontsize=10)
+    # Add data labels and percentages on bars
+    for i, (count, pct) in enumerate(zip(bettingResult_vc, percentages)):
+        ax.text(i, count + total * 0.01, f"{count}\n({pct}%)", ha='center', va='bottom', fontsize=10)
 
-# X-axis
-ax.set_xticks(range(len(new_labels)))
-ax.set_xticklabels(new_labels, rotation=45)
+    # X-axis
+    ax.set_xticks(range(len(new_labels)))
+    ax.set_xticklabels(new_labels, rotation=45)
 
-# Labels
-ax.set_xlabel('Betting Results')
-ax.set_ylabel('Frequency')
-ax.set_title(f'Betting and Game Results - Spreads of <= {spreadFilter}', pad=30)  # Increased pad for more margin
+    # Labels
+    ax.set_xlabel('Betting Results')
+    ax.set_ylabel('Frequency')
+    ax.set_title(f'Betting and Game Results - Spreads of <= {spreadFilter}', pad=30)  # Increased pad for more margin
 
-st.pyplot(fig)
-st.markdown(f"**Total games in selection:** {total}")
+    st.pyplot(fig)
+    st.markdown(f"**Total games in selection:** {total}")
 
-st.markdown("Data scope: 18,649 games over 15.5 NBA seasons (2007-Jan 2023)")
-st.markdown("Data source: Kaggle")
+    st.markdown("Data scope: 18,649 games over 15.5 NBA seasons (2007-Jan 2023)")
+    st.markdown("Data source: Kaggle")
