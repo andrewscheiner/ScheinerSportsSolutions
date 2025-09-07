@@ -144,14 +144,14 @@ if st.button('Update Results'):
         ax.text(i, count + total * 0.01, f"{count}\n({pct}%)", ha='center', va='bottom', fontsize=10)
 
     # Customize x-axis labels
-    new_labels = ['Favorite Covered', 'Underdog Won', 'Underdog Covered & Favorite Won', 'Game Was Pick-Em', 'Spread Pushed']
+    new_labels = ['Favorite Covered', 'Underdog Won', 'Dog Covered, Favorite Won', 'Game Was Pick-Em', 'Spread Pushed']
     ax.set_xticks(range(len(new_labels)))
     ax.set_xticklabels(new_labels, rotation=45)
 
     # Labels
     ax.set_xlabel('Game Results')
     ax.set_ylabel('Frequency')
-    ax.set_title(f'Betting and Game Results - Spreads of <= {spreadFilter}')
+    ax.set_title(f'Betting and Game Results - Spreads of <= {spreadFilter}', pad=30)  # Increased pad for more margin
 
     st.pyplot(fig)
     st.markdown(f"**Total games in selection:** {total}")
