@@ -3,8 +3,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-st.markdown("Disclaimer (9/6/2025): **There is a bug in the x-axis label names so not all spread results are 100% accurate, will be fixed asap.**")
-
 st.title("💰 Betting Systems")
 st.markdown("Analyze historical betting systems to understand which trends occur most often.")
 
