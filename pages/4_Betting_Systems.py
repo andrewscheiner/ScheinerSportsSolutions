@@ -125,6 +125,8 @@ oddsData_final['TotalOver'] = ((oddsData_final['HomeScore'] + oddsData_final['Aw
 #get abs value spread
 oddsData_final['PositiveSpread'] = oddsData_final["HomeSpread"].abs()
 
+#graph title
+title = ''
 # Streamlit UI for spread filter
 filter_option = st.radio(
     "Choose spread filter type:",
@@ -138,6 +140,7 @@ if filter_option == "Less than or equal to (<=)":
     )
     if st.button('Update Results'):
         oddsData_plot = oddsData_final[oddsData_final['PositiveSpread'] <= spreadFilter]
+    title = f'Betting and Game Results - Spreads of <= {spreadFilter}'
 
 elif filter_option == "Equal to (==)":
     spreadFilter_eq = st.slider(
@@ -146,6 +149,7 @@ elif filter_option == "Equal to (==)":
     )
     if st.button('Update Results'):
         oddsData_plot = oddsData_final[oddsData_final['PositiveSpread'] == spreadFilter_eq]
+    title = f'Betting and Game Results - Spreads of = {spreadFilter_eq}'
 
 elif filter_option == "Between (a <= x <= b)":
     spread_min, spread_max = st.slider(
@@ -157,6 +161,7 @@ elif filter_option == "Between (a <= x <= b)":
             (oddsData_final['PositiveSpread'] >= spread_min) &
             (oddsData_final['PositiveSpread'] <= spread_max)
         ]
+    title = f'Betting and Game Results - Spreads between {spread_min} and {spread_max}'
        
 bettingResult_vc = oddsData_plot[["Favorite Covered","Favorite Won Outright","Underdog Covered","Underdog Outright"]].value_counts()
 bettingResult_vc_df = pd.DataFrame(bettingResult_vc).reset_index()
@@ -198,10 +203,10 @@ ax.set_xticklabels(new_labels, rotation=45)
 # Labels
 ax.set_xlabel('Betting Results')
 ax.set_ylabel('Frequency')
-ax.set_title(f'Betting and Game Results - Spreads of <= {spreadFilter}', pad=30)  # Increased pad for more margin
+ax.set_title(title, pad=30)  # Increased pad for more margin
 
 st.pyplot(fig)
-st.markdown(f"**Total games in selection:** {total}")
+st.markdown(f"**Total games in selection:** {total} ({total / 18649 * 100:.2f}%)")
 
 st.markdown("Data scope: 18,649 games over 15.5 NBA seasons (2007-Jan 2023)")
 st.markdown("Data source: Kaggle")
