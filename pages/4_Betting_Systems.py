@@ -4,7 +4,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 st.title("💰 Betting Systems")
-st.markdown("Analyze historical betting systems to understand which trends occur most often.")
+st.markdown("### Analyze historical betting systems to understand which trends occur most often.")
+
+st.markdown("#### Scope: NBA Games from the 2007 season through January 2023.")
 
 oddsData = pd.read_csv(r'data/oddsData.csv')
 #Sort
@@ -111,29 +113,29 @@ def dogOutright(row):
 
 #gather results
 oddsData_final['score_diff'] = oddsData_final['HomeScore'] - oddsData_final['AwayScore']
-oddsData_final['FavoriteCover'] = oddsData_final.apply(favCover, axis=1)
-oddsData_final['FavoriteOutright'] = oddsData_final.apply(favOutright, axis=1)
-oddsData_final['DogCover'] = oddsData_final.apply(dogCover, axis=1)
-oddsData_final['DogOutright'] = oddsData_final.apply(dogOutright, axis=1)
+oddsData_final['Favorite Covered'] = oddsData_final.apply(favCover, axis=1)
+oddsData_final['Favorite Won Outright'] = oddsData_final.apply(favOutright, axis=1)
+oddsData_final['Underdog Covered'] = oddsData_final.apply(dogCover, axis=1)
+oddsData_final['Underdog Outright'] = oddsData_final.apply(dogOutright, axis=1)
 #total over?
 oddsData_final['TotalOver'] = ((oddsData_final['HomeScore'] + oddsData_final['AwayScore']) > \
                                 oddsData_final['PreFlopTotal'])*1
 
 # Streamlit UI for spread filter
-spreadFilter = st.slider('Select maximum spread value:', min_value=0, max_value=20, value=4, step=1)
+spreadFilter = st.slider('I want to see betting results where the spread is <= (less than or equal to):', min_value=0, max_value=20, value=4, step=1)
 if st.button('Update Results'):
     # Convert negative spreads to a positive number
     oddsData_final['PositiveSpread'] = oddsData_final["HomeSpread"].abs()
 
     # Filter spreads based on user selection
     oddsData_plot = oddsData_final[oddsData_final['PositiveSpread'] <= spreadFilter]
-    bettingResult_vc = oddsData_plot[["FavoriteCover","FavoriteOutright","DogCover","DogOutright"]].value_counts()
+    bettingResult_vc = oddsData_plot[["Favorite Covered","Favorite Won Outright","Underdog Covered","Underdog Outright"]].value_counts()
 
     # Plot game results based on filtered spread
     fig, ax = plt.subplots()
     bettingResult_vc.plot(kind="bar", ax=ax)
     # Customize x-axis labels
-    new_labels = ['FavoriteCover', 'DogOutright', 'DogCover & FavML', 'Pick-Em', 'Push']
+    new_labels = ['Favorite Covered', 'Favorite Won Outright', 'Underdog Covered, Favorite Won', 'Game Was Pick-Em', 'Spread Pushed']
     ax.set_xticks(range(len(new_labels)))
     ax.set_xticklabels(new_labels, rotation=45)
 
@@ -143,3 +145,6 @@ if st.button('Update Results'):
     ax.set_title(f'Betting and Game Results - Spreads of <= {spreadFilter}')
 
     st.pyplot(fig)
+
+st.markdown("Data scope: 18,649 games over 15.5 NBA seasons (2007-Jan 2023)")
+st.markdown("Data source: Kaggle")
