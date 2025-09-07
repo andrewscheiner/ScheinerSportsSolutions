@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 st.title("💰 Betting Systems")
 st.markdown("Analyze historical betting systems to understand which trends occur most often.")
 
-oddsData = pd.read_csv(r'data\\oddsData.csv')
+oddsData = pd.read_csv(r'data\oddsData.csv')
 #Sort
 oddsData = oddsData.sort_values(['date', 'team'])
 oddsData_final = oddsData[oddsData['home/visitor']=='vs']
