@@ -4,9 +4,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 st.title("💰 Betting Systems")
-st.markdown("### Analyze historical betting systems to understand which trends occur most often.")
+st.markdown("Analyze historical betting systems to understand which trends occur most often.")
 
-st.markdown("#### Scope: NBA Games from the 2007 season through January 2023.")
+st.markdown("Scope: NBA Games from the 2007 season through January 2023.")
 
 oddsData = pd.read_csv(r'data/oddsData.csv')
 #Sort
@@ -134,8 +134,17 @@ if st.button('Update Results'):
     # Plot game results based on filtered spread
     fig, ax = plt.subplots()
     bettingResult_vc.plot(kind="bar", ax=ax)
+
+    # Calculate percentages
+    total = bettingResult_vc.sum()
+    percentages = (bettingResult_vc / total * 100).round(2)
+
+    # Add data labels and percentages on bars
+    for i, (count, pct) in enumerate(zip(bettingResult_vc, percentages)):
+        ax.text(i, count + total * 0.01, f"{count}\n({pct}%)", ha='center', va='bottom', fontsize=10)
+
     # Customize x-axis labels
-    new_labels = ['Favorite Covered', 'Favorite Won Outright', 'Underdog Covered, Favorite Won', 'Game Was Pick-Em', 'Spread Pushed']
+    new_labels = ['Favorite Covered', 'Favorite Won Outright', 'Underdog Covered', 'Underdog Outright']
     ax.set_xticks(range(len(new_labels)))
     ax.set_xticklabels(new_labels, rotation=45)
 
@@ -145,6 +154,7 @@ if st.button('Update Results'):
     ax.set_title(f'Betting and Game Results - Spreads of <= {spreadFilter}')
 
     st.pyplot(fig)
+    st.markdown(f"**Total games in selection:** {total}")
 
 st.markdown("Data scope: 18,649 games over 15.5 NBA seasons (2007-Jan 2023)")
 st.markdown("Data source: Kaggle")
