@@ -6,3 +6,4 @@ MLB-StatsAPI
 scipy
 openpyxl
 numpy
+matplotlib
