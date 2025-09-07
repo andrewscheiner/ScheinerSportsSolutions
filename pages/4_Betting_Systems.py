@@ -131,27 +131,45 @@ if st.button('Update Results'):
 
     # Filter spreads based on user selection
     oddsData_plot = oddsData_final[oddsData_final['PositiveSpread'] <= spreadFilter]
-    bettingResult_vc = oddsData_plot[["Favorite Covered","Favorite Won Outright","Underdog Covered","Underdog Outright"]].value_counts()
+    bettingResult_vc = oddsData_plot[["FavoriteCover","FavoriteOutright","DogCover","DogOutright"]].value_counts()
+    bettingResult_vc_df = pd.DataFrame(bettingResult_vc).reset_index()
+
+    # Map each result row to a label based on the conditions
+    def get_label(row):
+        vals = row[['FavoriteCover', 'FavoriteOutright', 'DogCover', 'DogOutright']].tolist()
+        if vals == [1, 1, 0, 0]:
+            return 'Favorite Covered'
+        elif vals == [0, 0, 1, 1]:
+            return 'Underdog Won'
+        elif vals == [0, 1, 1, 0]:
+            return 'Favorite Won, Dog Covered'
+        elif vals == [-1, -1, -1, -1]:
+            return 'Pick-Em'
+        elif vals == [0, 1, 0, 0]:
+            return 'Push'
+        else:
+            return str(vals)
+
+    new_labels = bettingResult_vc_df.apply(get_label, axis=1)
 
     # Plot game results based on filtered spread
     fig, ax = plt.subplots()
-    bettingResult_vc.plot(kind="bar", ax=ax)
+    bettingResult_vc_df.plot(kind="bar", ax=ax)
 
     # Calculate percentages
-    total = bettingResult_vc.sum()
-    percentages = (bettingResult_vc / total * 100).round(2)
+    total = bettingResult_vc_df.sum()
+    percentages = (bettingResult_vc_df / total * 100).round(2)
 
     # Add data labels and percentages on bars
-    for i, (count, pct) in enumerate(zip(bettingResult_vc, percentages)):
+    for i, (count, pct) in enumerate(zip(bettingResult_vc_df, percentages)):
         ax.text(i, count + total * 0.01, f"{count}\n({pct}%)", ha='center', va='bottom', fontsize=10)
 
-    # Customize x-axis labels
-    new_labels = ['Favorite Covered', 'Underdog Won', 'Dog Covered, Favorite Won', 'Game Was Pick-Em', 'Spread Pushed']
+    # X-axis
     ax.set_xticks(range(len(new_labels)))
     ax.set_xticklabels(new_labels, rotation=45)
 
     # Labels
-    ax.set_xlabel('Game Results')
+    ax.set_xlabel('Betting Results')
     ax.set_ylabel('Frequency')
     ax.set_title(f'Betting and Game Results - Spreads of <= {spreadFilter}', pad=30)  # Increased pad for more margin
 
