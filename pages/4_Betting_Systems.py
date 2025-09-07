@@ -131,12 +131,12 @@ if st.button('Update Results'):
 
     # Filter spreads based on user selection
     oddsData_plot = oddsData_final[oddsData_final['PositiveSpread'] <= spreadFilter]
-    bettingResult_vc = oddsData_plot[["FavoriteCover","FavoriteOutright","DogCover","DogOutright"]].value_counts()
+    bettingResult_vc = oddsData_plot[["Favorite Covered","Favorite Won Outright","Underdog Covered","Underdog Outright"]].value_counts()
     bettingResult_vc_df = pd.DataFrame(bettingResult_vc).reset_index()
 
     # Map each result row to a label based on the conditions
     def get_label(row):
-        vals = row[['FavoriteCover', 'FavoriteOutright', 'DogCover', 'DogOutright']].tolist()
+        vals = row[['Favorite Covered', 'Favorite Won Outright', 'Underdog Covered', 'Underdog Outright']].tolist()
         if vals == [1, 1, 0, 0]:
             return 'Favorite Covered'
         elif vals == [0, 0, 1, 1]:
