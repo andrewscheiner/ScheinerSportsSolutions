@@ -154,14 +154,14 @@ if st.button('Update Results'):
 
     # Plot game results based on filtered spread
     fig, ax = plt.subplots()
-    bettingResult_vc_df.plot(kind="bar", ax=ax)
+    bettingResult_vc.plot(kind="bar", ax=ax)
 
     # Calculate percentages
-    total = bettingResult_vc_df.sum()
-    percentages = (bettingResult_vc_df / total * 100).round(2)
+    total = bettingResult_vc.sum()
+    percentages = (bettingResult_vc / total * 100).round(2)
 
     # Add data labels and percentages on bars
-    for i, (count, pct) in enumerate(zip(bettingResult_vc_df, percentages)):
+    for i, (count, pct) in enumerate(zip(bettingResult_vc, percentages)):
         ax.text(i, count + total * 0.01, f"{count}\n({pct}%)", ha='center', va='bottom', fontsize=10)
 
     # X-axis
