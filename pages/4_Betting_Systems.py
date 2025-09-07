@@ -124,13 +124,40 @@ oddsData_final['TotalOver'] = ((oddsData_final['HomeScore'] + oddsData_final['Aw
                                 oddsData_final['PreFlopTotal'])*1
 
 # Streamlit UI for spread filter
-spreadFilter = st.slider('I want to see betting results where the spread is <= (less than or equal to):', min_value=0, max_value=20, value=4, step=1)
-if st.button('Update Results'):
-    # Convert negative spreads to a positive number
-    oddsData_final['PositiveSpread'] = oddsData_final["HomeSpread"].abs()
+filter_option = st.radio(
+    "Choose spread filter type:",
+    ("Less than or equal to (<=)", "Equal to (==)", "Between (a <= x <= b)")
+)
 
-    # Filter spreads based on user selection
-    oddsData_plot = oddsData_final[oddsData_final['PositiveSpread'] <= spreadFilter]
+if filter_option == "Less than or equal to (<=)":
+    spreadFilter = st.slider(
+        'Show betting results where the spread is <= (less than or equal to):',
+        min_value=0, max_value=20, value=4, step=1
+    )
+    if st.button('Update Results'):
+        oddsData_final['PositiveSpread'] = oddsData_final["HomeSpread"].abs()
+        oddsData_plot = oddsData_final[oddsData_final['PositiveSpread'] <= spreadFilter]
+
+elif filter_option == "Equal to (==)":
+    spreadFilter_eq = st.slider(
+        'Show betting results where the spread is exactly:',
+        min_value=0, max_value=20, value=4, step=1
+    )
+    if st.button('Update Results'):
+        oddsData_final['PositiveSpread'] = oddsData_final["HomeSpread"].abs()
+        oddsData_plot = oddsData_final[oddsData_final['PositiveSpread'] == spreadFilter_eq]
+
+elif filter_option == "Between (a <= x <= b)":
+    spread_min, spread_max = st.slider(
+        'Show betting results where the spread is between:',
+        min_value=0, max_value=20, value=(2, 6), step=1
+    )
+    if st.button('Update Results'):
+        oddsData_final['PositiveSpread'] = oddsData_final["HomeSpread"].abs()
+        oddsData_plot = oddsData_final[
+            (oddsData_final['PositiveSpread'] >= spread_min) &
+            (oddsData_final['PositiveSpread'] <= spread_max)
+        ]
     bettingResult_vc = oddsData_plot[["Favorite Covered","Favorite Won Outright","Underdog Covered","Underdog Outright"]].value_counts()
     bettingResult_vc_df = pd.DataFrame(bettingResult_vc).reset_index()
 
