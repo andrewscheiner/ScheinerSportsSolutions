@@ -5,3 +5,4 @@ Andrew Scheiner's newest creation, this is a site dedicated to providing valuabl
 - ⚾ **Pitcher Props**: Analyze underlying pitching metrics and identify prop bet opportunities
 - 🔍 **Tango Tracker**: Continually track the MLB CY Young Award Race using Tom Tango's successful formula
 - 🪜 **Laddering Tool**: Build and visualize progressive betting ladders to optimize risk and reward
+- 🏀 **NBA Betting Systems**: Is it smarter to bet the underdog to win outright or to cover?
