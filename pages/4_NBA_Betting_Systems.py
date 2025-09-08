@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 st.title("🏀 NBA Betting Systems")
-st.markdown("Is it smarter to bet the underdog to win outright or to cover?")
+st.markdown("**Is it smarter to bet the underdog to win outright or to cover?**")
 
 st.markdown("Scope: NBA Games from the 2007 season through January 2023.")
 
