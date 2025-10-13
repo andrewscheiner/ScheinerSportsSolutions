@@ -24,8 +24,9 @@ if option == "Team":
     df.columns = columns
     st.dataframe(df)
 else:
-    week = st.slider("Select week:", 1, 22, 1)
-    df = pd.read_excel("data/all_weeks_power_predictions.xlsx")
-    week_df = df[df['week'] == week]
-    week_df.columns = columns
-    st.dataframe(week_df)
+    xls = pd.ExcelFile("data/all_weeks_power_predictions.xlsx")
+    weeks = sorted(xls.sheet_names, key=lambda x: int(x.split()[1]))
+    week = st.selectbox("Select week:", weeks)
+    df = pd.read_excel(xls, sheet_name=week)
+    df.columns = columns
+    st.dataframe(df)
