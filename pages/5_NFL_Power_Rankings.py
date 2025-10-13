@@ -21,11 +21,11 @@ if option == "Team":
     teams = sorted(xls.sheet_names)
     team = st.selectbox("Select a team:", teams)
     df = pd.read_excel(xls, sheet_name=team)
-    df = df[columns]
+    df.columns = columns
     st.dataframe(df)
 else:
     week = st.slider("Select week:", 1, 22, 1)
     df = pd.read_excel("data/all_weeks_power_predictions.xlsx")
     week_df = df[df['week'] == week]
-    week_df = week_df[columns]
+    week_df.columns = columns
     st.dataframe(week_df)
