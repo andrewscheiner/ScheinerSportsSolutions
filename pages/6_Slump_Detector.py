@@ -53,6 +53,7 @@ at_bats['ab_result'] = at_bats['events'].apply(event_to_ab)
 # Drop non-at-bats, convert set of results to a list
 at_bats_results = at_bats.dropna(subset=['ab_result'])['ab_result'].tolist()
 
+#SPRT
 def sprt_batting_average(at_bats_x, p0, p1, alpha, beta):
     """
     Sequential Probability Ratio Test (SPRT) for batting average.
@@ -147,6 +148,42 @@ h0_rule = alt.Chart(pd.DataFrame({"y":[h0_thr]})).mark_rule(color="red", strokeD
 # Combine and display
 chart = (llr_line + h1_rule + h0_rule).interactive()
 st.altair_chart(chart, use_container_width=True)
+
+#Create explanation for decision based on final llr
+def sprt_explanation(llr, p0=h0, p1=h1, alpha=a, beta=b, player=selected_player):
+    # thresholds
+    A = (1 - beta) / alpha
+    B = beta / (1 - alpha)
+    lnA, lnB = math.log(A), math.log(B)
+
+    if llr >= lnA:
+        decision = f"Reject H0: Evidence strongly supports {player} being closer to a {p1:.3f} hitter."
+        explanation = (
+            f"{player}'s log-likelihood ratio is {llr:.2f}, which is above the threshold {lnA:.2f}. "
+            f"This means we can confidently classify him as a {p1:.3f}-level hitter rather than {p0:.3f}."
+        )
+    elif llr <= lnB:
+        decision = f"Reject H1: Evidence supports {player} being closer to a {p0:.3f} hitter."
+        explanation = (
+            f"{player}'s log-likelihood ratio is {llr:.2f}, which is below the threshold {lnB:.2f}. "
+            f"This means we classify him as a {p0:.3f}-level hitter."
+        )
+    else:
+        decision = f"Continue sampling: Not enough evidence yet for {player}."
+        explanation = (
+            f"{player}'s log-likelihood ratio is {llr:.2f}, which is between thresholds "
+            f"{lnB:.2f} and {lnA:.2f}. We need more at-bats before making a confident decision."
+        )
+
+    return decision, explanation
+
+# Streamlit UI
+decision, explanation = sprt_explanation(llr)
+
+st.title("SPRT Decision and Explanation")
+st.subheader("Player: " + selected_player)
+st.write("Decision:", decision)
+st.write(explanation)
 
 st.markdown("Scope: Baseball Savant Statcast data from 2025 season")
 st.write("© Andrew Scheiner 2025")
