@@ -169,7 +169,7 @@ def sprt_explanation(llr, p0=h0, p1=h1, alpha=a, beta=b, player=selected_player)
             f"This means we classify him as a {p0:.3f}-level hitter."
         )
     else:
-        decision = f"Continue sampling: Not enough evidence yet for {player}."
+        decision = f"Not enough evidence yet for {player}."
         explanation = (
             f"{player}'s log-likelihood ratio is {llr:.2f}, which is between thresholds "
             f"{lnB:.2f} and {lnA:.2f}. We need more at-bats before making a confident decision."
