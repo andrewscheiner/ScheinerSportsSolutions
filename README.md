@@ -6,3 +6,5 @@ Andrew Scheiner's newest creation, this is a site dedicated to providing valuabl
 - 🔍 **Tango Tracker**: Continually track the MLB CY Young Award Race using Tom Tango's successful formula
 - 🪜 **Laddering Tool**: Build and visualize progressive betting ladders to optimize risk and reward
 - 🏀 **NBA Betting Systems**: Is it smarter to bet the underdog to win outright or to cover?
+- 🏈 **NFL Power Rankings**: Evaluating teams every week to determine betting edges.
+- 🧊 **Slump Detector**: Deciding a player's true batting average after every at-bat. Will they improve or regress?
