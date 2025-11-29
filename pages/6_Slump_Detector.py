@@ -12,7 +12,7 @@ st.markdown("Use cases: fantasy baseball pickups, GM trade decisions, scouting r
 
 
 # Load player list
-players = pd.read_csv(r"data\mlbam_ids.csv")
+players = pd.read_csv(r"data/mlbam_ids.csv")
 player_names = players['Name'].dropna().unique().tolist()
 
 # Search input and selection
