@@ -157,15 +157,15 @@ def sprt_explanation(llr, p0=h0, p1=h1, alpha=a, beta=b, player=selected_player)
     lnA, lnB = math.log(A), math.log(B)
 
     if llr >= lnA:
-        decision = f"Reject H0: Evidence strongly supports {player} being closer to a {p1:.3f} hitter."
+        decision = f"Evidence strongly supports {player} being closer to a {p1:.3f} hitter."
         explanation = (
-            f"{player}'s log-likelihood ratio is {llr:.2f}, which is above the threshold {lnA:.2f}. "
+            f"{player}'s log-likelihood ratio is {llr:.2f}, which is above the upper threshold {lnA:.2f}. "
             f"This means we can confidently classify him as a {p1:.3f}-level hitter rather than {p0:.3f}."
         )
     elif llr <= lnB:
-        decision = f"Reject H1: Evidence supports {player} being closer to a {p0:.3f} hitter."
+        decision = f"Evidence supports {player} being closer to a {p0:.3f} hitter."
         explanation = (
-            f"{player}'s log-likelihood ratio is {llr:.2f}, which is below the threshold {lnB:.2f}. "
+            f"{player}'s log-likelihood ratio is {llr:.2f}, which is below the lower threshold {lnB:.2f}. "
             f"This means we classify him as a {p0:.3f}-level hitter."
         )
     else:
