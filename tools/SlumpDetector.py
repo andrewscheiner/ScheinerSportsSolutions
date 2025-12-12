@@ -187,4 +187,3 @@ def app():
     st.write(explanation)
 
     st.markdown("Scope: Baseball Savant Statcast data from 2025 season")
-    st.write("© Andrew Scheiner 2025")
