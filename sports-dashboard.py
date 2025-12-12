@@ -35,6 +35,10 @@ st.markdown("""
     div[data-testid="stHorizontalBlock"] {
         gap: 0rem !important;        /* remove column gaps */
     }
+    div[data-testid="stVerticalBlock"] {
+        gap: 0rem !important; /* remove vertical gaps */
+    }
+
     </style>
 """, unsafe_allow_html=True)
 
