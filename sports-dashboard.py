@@ -1,22 +1,24 @@
 import streamlit as st
 
-st.set_page_config(
-    page_title="Andrew Scheiner's Sports Dashboard",
-    page_icon=":trophy:",
-    layout="wide",
-    initial_sidebar_state="expanded")
-
-st.set_page_config(page_title="Andrew Scheiner's Sports Dashboard", page_icon=":trophy:", layout="wide")
-
-st.title('Scheiner Sports Solutions')
-st.markdown('An interactive Streamlit dashboard containing multiple sports solutions \
-         for fantasy and betting help. Designed by Andrew Scheiner.')
-
 ##########################
 # CSS #
 ##########################
 st.markdown("""
     <style>
+    /* Center all text elements */
+    .block-container h1, 
+    .block-container h2, 
+    .block-container h3, 
+    .block-container h4, 
+    .block-container h5, 
+    .block-container h6, 
+    .block-container p {
+        text-align: center;
+    }
+    /* Optional: center buttons too */
+    div.stButton {
+        text-align: center;
+    }       
     div.stButton > button {
         background-color: #00745d;   /* card color */
         color: white;                /* text color */
@@ -25,8 +27,9 @@ st.markdown("""
         width: 100%;                 /* full column width */
         font-size: 18px;             /* larger text */
         font-weight: bold;
-        margin: 0;                   /* remove gaps */
         transition: 0.3s;            /* smooth hover */
+        margin: auto;
+        display: block;
     }
     div.stButton > button:hover {
         background-color: #004234;   /* darker on hover */
@@ -39,6 +42,17 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+st.set_page_config(
+    page_title="Andrew Scheiner's Sports Dashboard",
+    page_icon=":trophy:",
+    layout="wide",
+    initial_sidebar_state="expanded")
+
+st.set_page_config(page_title="Andrew Scheiner's Sports Dashboard", page_icon=":trophy:", layout="wide")
+
+st.title('Scheiner Sports Solutions')
+st.markdown('An interactive Streamlit dashboard containing multiple sports solutions \
+         for fantasy and betting help. Designed by Andrew Scheiner.')
 
 ##########################
 #### Revamp home page ####
