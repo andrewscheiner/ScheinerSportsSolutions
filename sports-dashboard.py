@@ -18,7 +18,7 @@ st.markdown('An interactive Streamlit dashboard containing multiple sports solut
 st.markdown("""
     <style>
     div.stButton > button {
-        background-color: #2E86C1;   /* card color */
+        background-color: #00745d;   /* card color */
         color: white;                /* text color */
         border-radius: 10px;         /* rounded corners */
         height: 100px;               /* taller buttons */
@@ -29,7 +29,7 @@ st.markdown("""
         transition: 0.3s;            /* smooth hover */
     }
     div.stButton > button:hover {
-        background-color: #1B4F72;   /* darker on hover */
+        background-color: #004234;   /* darker on hover */
         transform: scale(1.05);      /* slight zoom */
     }
     div[data-testid="stHorizontalBlock"] {
