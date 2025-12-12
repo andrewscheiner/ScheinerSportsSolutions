@@ -15,6 +15,20 @@ st.markdown("""
     .block-container p {
         text-align: center;
     }
+    /* Center the entire block container */
+    .block-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;   /* horizontal centering */
+        justify-content: center; /* vertical centering */
+    }
+
+    /* Center the entire row of columns */
+    div[data-testid="stHorizontalBlock"] {
+        justify-content: center !important; /* center the row cluster */
+        gap: 1rem !important;               /* optional spacing between buttons */
+    }
+
     /* Optional: center buttons too */
     div.stButton {
         text-align: center;
