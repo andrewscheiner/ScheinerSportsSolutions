@@ -13,6 +13,33 @@ st.markdown('An interactive Streamlit dashboard containing multiple sports solut
          for fantasy and betting help. Designed by Andrew Scheiner.')
 
 ##########################
+# CSS #
+##########################
+st.markdown("""
+    <style>
+    div.stButton > button {
+        background-color: #2E86C1;   /* card color */
+        color: white;                /* text color */
+        border-radius: 10px;         /* rounded corners */
+        height: 100px;               /* taller buttons */
+        width: 100%;                 /* full column width */
+        font-size: 18px;             /* larger text */
+        font-weight: bold;
+        margin: 0;                   /* remove gaps */
+        transition: 0.3s;            /* smooth hover */
+    }
+    div.stButton > button:hover {
+        background-color: #1B4F72;   /* darker on hover */
+        transform: scale(1.05);      /* slight zoom */
+    }
+    div[data-testid="stHorizontalBlock"] {
+        gap: 0rem !important;        /* remove column gaps */
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+
+##########################
 #### Revamp home page ####
 ##########################
 # Import each page as a module
@@ -41,18 +68,17 @@ if cols[2].button("🏀 NBA Betting Systems"):
     st.session_state.page = "nba"
 
 # -------------------------------
-# Seasonal Tools Section (2x2)
+# Seasonal Tools Section (1x4)
 # -------------------------------
 st.header("Seasonal Tools")
-row1 = st.columns(2)
-if row1[0].button("🔍 Tango Tracker"):
+cols2 = st.columns(4)
+if cols2[0].button("🔍 Tango Tracker"):
     st.session_state.page = "tango"
-if row1[1].button("🏈 NFL Power Rankings"):
+if cols2[1].button("🏈 NFL Power Rankings"):
     st.session_state.page = "nfl"
-row2 = st.columns(2)
-if row2[0].button("🧊 Slump Detector"):
+if cols2[2].button("🧊 Slump Detector"):
     st.session_state.page = "slump"
-if row2[1].button("🔄 Reverse Run Your Pool"):
+if cols2[3].button("🔄 Reverse Run Your Pool"):
     st.session_state.page = "reverse_pool"
 
 # Render selected page
