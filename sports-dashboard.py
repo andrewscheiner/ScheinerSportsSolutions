@@ -38,7 +38,6 @@ st.markdown("""
         color: white;                /* text color */
         border-radius: 10px;         /* rounded corners */
         height: 100px;               /* taller buttons */
-        width: 100%;                 /* full column width */
         font-size: 18px;             /* larger text */
         font-weight: bold;
         transition: 0.3s;            /* smooth hover */
