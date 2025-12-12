@@ -33,10 +33,7 @@ st.markdown("""
         transform: scale(1.05);      /* slight zoom */
     }
     div[data-testid="stHorizontalBlock"] {
-        gap: 0rem !important;        /* remove column gaps */
-    }
-    div[data-testid="stVerticalBlock"] {
-        gap: 0rem !important; /* remove vertical gaps */
+        gap: 0rem /* remove column gaps */
     }
 
     </style>
