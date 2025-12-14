@@ -8,5 +8,4 @@ openpyxl
 numpy
 matplotlib
 requests
-re
-datetime
+beautifulsoup4
