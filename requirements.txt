@@ -7,3 +7,6 @@ scipy
 openpyxl
 numpy
 matplotlib
+requests
+re
+datetime
