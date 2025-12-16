@@ -8,6 +8,72 @@ st.set_page_config(
 
 st.set_page_config(page_title="Andrew Scheiner's Sports Dashboard", page_icon=":trophy:", layout="wide")
 
+# Replace with the path or URL to your image
+background_image_url = "https://raw.githubusercontent.com/andrewscheiner/andrewscheiner.github.io/refs/heads/main/assets/heatmap0.png"
+
+page_bg_css = f"""
+<style>
+[data-testid="stAppViewContainer"] {{
+    background-image: url("{background_image_url}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}}
+
+[data-testid="stHeader"] {{
+    background: rgba(0,0,0,0);  /* transparent header */
+}}
+
+[data-testid="stToolbar"] {{
+    right: 2rem;
+}}
+
+div.stButton > button {{
+    font-size: 20px;        /* larger text */
+    font-weight: bold;      /* bold text */
+    padding: 15px 30px;     /* more space inside */
+    height: 60px;           /* taller button */
+    width: 100%;            /* stretch to column width */
+    border-radius: 10px;    /* rounded corners */
+}}
+
+/* Make general text bigger and bolder */
+html, body, [class*="css"] {{
+    font-size: 18px;        /* larger text */
+    font-weight: 600;       /* semi-bold */
+}}
+/* Add a card-like style around the dataframe */
+[data-testid="stDataFrame"] {{
+    border: 2px solid #1E90FF;   /* bold border */
+    border-radius: 10px;         /* rounded corners */
+    box-shadow: 4px 4px 12px rgba(0,0,0,0.2); /* subtle shadow */
+    padding: 10px;
+    background-color: #ffffff;   /* solid background */
+}}
+
+/* Table text styling */
+[data-testid="stDataFrame"] table {{
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}}
+
+/* Header styling */
+[data-testid="stDataFrame"] th {{
+    background-color: #1E90FF !important;
+    color: white !important;
+    font-size: 18px;
+    font-weight: bold;
+}}
+
+
+</style>
+
+"""
+
+st.markdown(page_bg_css, unsafe_allow_html=True)
+
+
 st.title('Scheiner Sports Solutions')
 st.markdown('An interactive Streamlit dashboard containing multiple sports solutions \
          for fantasy and betting help. Designed by Andrew Scheiner.')
