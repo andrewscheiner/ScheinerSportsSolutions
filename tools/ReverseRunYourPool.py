@@ -20,8 +20,9 @@ def app():
         pre_data_datetime = datetime.strptime(
             pre_data['Last Updated'][0], '%Y-%m-%d %H:%M:%S'
         )
-        if 1 == 0:
-            print("This will never run")
+        st.write(f"Last updated: {pre_data_datetime}")
+        del pre_data['Last Updated']  #remove last updated column for display
+        st.dataframe(pre_data)
         # # Build today's 03:00 AM reference
         # today_3am = datetime.combine(datetime.today().date(), time(3, 0))
 
@@ -30,9 +31,9 @@ def app():
         #     st.write(f"Last updated: {pre_data_datetime}")
         #     del pre_data['Last Updated']  #remove last updated column for display
         #     st.dataframe(pre_data)
-        else:
-            st.write("Pybaseball must be re-run.")
-            raise Exception("BLANK")
+        # else:
+        #     st.write("Pybaseball must be re-run.")
+        #     raise Exception("BLANK")
 
     except:
         #run pybaseball to create initial data
