@@ -20,14 +20,16 @@ def app():
         pre_data_datetime = datetime.strptime(
             pre_data['Last Updated'][0], '%Y-%m-%d %H:%M:%S'
         )
-        # Build today's 03:00 AM reference
-        today_3am = datetime.combine(datetime.today().date(), time(3, 0))
+        if 1 == 0:
+            print("This will never run")
+        # # Build today's 03:00 AM reference
+        # today_3am = datetime.combine(datetime.today().date(), time(3, 0))
 
-        # Compare- if data's datetime is earlier than today at 03:00 AM, need to re-run pybaseball
-        if pre_data_datetime < today_3am:
-            st.write(f"Last updated: {pre_data_datetime}")
-            del pre_data['Last Updated']  #remove last updated column for display
-            st.dataframe(pre_data)
+        # # Compare- if data's datetime is earlier than today at 03:00 AM, need to re-run pybaseball
+        # if pre_data_datetime < today_3am:
+        #     st.write(f"Last updated: {pre_data_datetime}")
+        #     del pre_data['Last Updated']  #remove last updated column for display
+        #     st.dataframe(pre_data)
         else:
             st.write("Pybaseball must be re-run.")
             raise Exception("BLANK")
