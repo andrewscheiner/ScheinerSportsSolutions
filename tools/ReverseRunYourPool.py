@@ -21,7 +21,7 @@ def app():
             pre_data['Last Updated'][0], '%Y-%m-%d %H:%M:%S'
         )
         # Build today's 03:00 AM reference
-        today_3am = datetime.combine(datetime.today().date(), time(23, 0))
+        today_3am = datetime.combine(datetime.today().date(), time(3, 0))
 
         # Compare- if data's datetime is earlier than today at 03:00 AM, need to re-run pybaseball
         if pre_data_datetime < today_3am:
