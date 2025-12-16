@@ -36,8 +36,7 @@ def app():
             disabled=True  # makes it display-only
         )
         # Simulate your heavy function
-        time.sleep(2)  # replace with schedule_and_record(2025, team)
-        schedule_records.append(f"Record for {team}")
+        schedule_records.append(schedule_and_record(2025, team))
 
     # Concatenate all schedule records into a single DataFrame
     df = pd.concat(schedule_records, ignore_index=True)
@@ -88,13 +87,11 @@ def app():
     # Convert all values in the DataFrame to integers
     ryp = ryp.astype(int)
 
-    # Displayy ryp dataframe
-    st.header("Reverse Run Your Pool - Runs Given Up Table")
-
+    #Display dataframe
     st.dataframe(ryp)
 
     # Add column for datetime
-    #ryp['Last Updated'] = pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')
+    ryp['Last Updated'] = pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')
 
     #save to csv for faster loading
-    #ryp.to_csv('../data/runs_given_up.csv', index_label='Tm')
+    ryp.to_csv('../data/runs_given_up.csv', index_label='Tm')
