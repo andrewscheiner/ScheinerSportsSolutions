@@ -120,8 +120,8 @@ def app():
         st.error("p1 must be greater than p0. Please adjust the sliders.")
         st.stop()
 
-    a = st.slider("Type I error (alpha)", min_value=0.001, max_value=1.0, value=0.01, step=0.001, format="%.3f")
-    b = st.slider("Type II error (beta)", min_value=0.001, max_value=1.0, value=0.10, step=0.001, format="%.3f")
+    a = st.slider("False alarm chance", min_value=0.001, max_value=1.0, value=0.01, step=0.001, format="%.3f")
+    b = st.slider("Missed opportunity chance", min_value=0.001, max_value=1.0, value=0.10, step=0.001, format="%.3f")
 
     decision, llr, steps = sprt_batting_average(at_bats_results, h0, h1, a, b)
 
