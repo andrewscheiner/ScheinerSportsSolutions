@@ -54,7 +54,7 @@ def get_nba_historical_scoreboard(date):
         response.raise_for_status()  # Raise error for bad status codes
         data = response.json()
         # Save JSON
-        with open('nba_scoreboard.json', 'w') as f:
+        with open('data/nba_scoreboard.json', 'w') as f:
             json.dump(data, f, indent=2)
 
         #Find games
