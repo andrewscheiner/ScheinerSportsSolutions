@@ -99,4 +99,4 @@ for i in dates:
     print("-" * 40)
 
 print("All data fetched.")
-curr_season_scores.to_csv('nba_scores_2025_2026.csv', index=False)
+curr_season_scores.to_csv('data/nba_scores_2025_2026.csv', index=False)

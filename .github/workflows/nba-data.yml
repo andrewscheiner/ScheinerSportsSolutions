@@ -21,7 +21,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-            pip install requests json datetime pandas
+            pip install requests pandas
       - name: Execute Python Script
         run: |
             python nba-collect-data.py
