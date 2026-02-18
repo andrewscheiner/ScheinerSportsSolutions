@@ -231,7 +231,7 @@ def app():
     ###########################
     #Get today's date YYYYMMDD
     today_date = datetime.now().strftime("%Y%m%d")
-    scoreboard = get_today_games(today_date)
+    scoreboard = get_today_games('20260219')
 
     ###### Rolling conversions
     scoreboard["Home Last5"] = (scoreboard["Home Last5"]).astype(int)
