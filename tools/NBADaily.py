@@ -110,11 +110,17 @@ def app():
     team_games_latest['Team'] = team_games_latest['Team'].astype(str)
     del team_games_latest["Win"]
 
-    ### 4. Home/away game totals, half totals
+    ### 4. Home/away game totals, half totals, PPG
+    #Home
     home_totals = df.groupby("Home ID")[["Home 1H", "Home 2H", "Home Score"]].mean().round(0) \
         .rename(columns={"Home Score": "Home PPG"})
+    home_totals['Home ID'] = home_totals.index.astype(str)
+    home_totals.index.name = None
+    #Away
     away_totals = df.groupby("Away ID")[["Away 1H", "Away 2H", "Away Score"]].mean().round(0) \
         .rename(columns={"Away Score": "Away PPG"})
+    away_totals['Away ID'] = away_totals.index.astype(str)
+    away_totals.index.name = None
     
     ### 5. 1H/2H point differentials
     # First half
