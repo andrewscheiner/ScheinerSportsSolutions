@@ -164,18 +164,18 @@ def app():
         
         # 1. Home/Away Record
         if type == "Home":
-            # DEBUGGING
-            st.dataframe(team_df)
-            st.dataframe(home_record)
-            st.write(team_df['Home ID'].dtypes)
-            st.write(home_record['Home ID'].dtypes)
+            # # DEBUGGING
+            # st.dataframe(team_df)
+            # st.dataframe(home_record)
+            # st.write(team_df['Home ID'].dtypes)
+            # st.write(home_record['Home ID'].dtypes)
             team_df = team_df.merge(home_record, on=f"{type} ID", how="left")
         else:
             # DEBUGGING
-            st.dataframe(team_df)
-            st.dataframe(away_record)
-            st.write(team_df['Away ID'].dtypes)
-            st.write(away_record['Away ID'].dtypes)
+            # st.dataframe(team_df)
+            # st.dataframe(away_record)
+            # st.write(team_df['Away ID'].dtypes)
+            # st.write(away_record['Away ID'].dtypes)
             team_df = team_df.merge(away_record, on=f"{type} ID", how="left")
         if debug: print(team_df)
 
@@ -268,6 +268,8 @@ def app():
     #Get today's date YYYYMMDD
     today_date = datetime.now().strftime("%Y%m%d") #ex: 20260223
     scoreboard = get_today_games(today_date)
+
+    st.dataframe(scoreboard)
 
     ###### Rolling conversions
     scoreboard["Home Last5"] = (scoreboard["Home Last5"]).astype(int)
