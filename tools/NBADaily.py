@@ -89,14 +89,14 @@ def app():
     home_record.rename(columns={"sum": "Home Wins", "count": "Home Games"}, inplace=True)
     home_record["Home Losses"] = home_record["Home Games"] - home_record["Home Wins"]
     del home_record["Home Games"]
-    home_record['Home ID'] = home_record.index
+    home_record['Home ID'] = home_record.index.astype(str)
     home_record.index.name = None
 
     away_record = df.groupby("Away ID")["Away Win"].agg(["sum", "count"])
     away_record.rename(columns={"sum": "Away Wins", "count": "Away Games"}, inplace=True)
     away_record["Away Losses"] = away_record["Away Games"] - away_record["Away Wins"]
     del away_record["Away Games"]
-    away_record['Away ID'] = away_record.index
+    away_record['Away ID'] = away_record.index.astype(str)
     away_record.index.name = None
 
     ### 3. Win/loss last 5 and last 10
