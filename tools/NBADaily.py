@@ -175,6 +175,8 @@ def app():
 
         # 3. Game/half totals
         if type == "Home":
+            st.dataframe(team_df)
+            st.dataframe(home_totals)
             team_df = team_df.merge(home_totals, on=f"{type} ID", how="left")
         else:
             team_df = team_df.merge(away_totals, on=f"{type} ID", how="left")
