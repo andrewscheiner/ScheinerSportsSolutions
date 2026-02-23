@@ -269,6 +269,12 @@ def app():
     today_date = datetime.now().strftime("%Y%m%d") #ex: 20260223
     scoreboard = get_today_games(today_date)
 
+    # DEBUG
+    st.write(scoreboard.dtypes)
+    for col in scoreboard.columns:
+        types = scoreboard[col].apply(type).unique()
+        st.write(col, types)
+
     st.dataframe(scoreboard)
 
     ###### Rolling conversions
