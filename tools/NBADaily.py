@@ -108,6 +108,8 @@ def app():
     team_games["Last10"] = team_games.groupby("Team")["Win"].rolling(10).sum().reset_index(0, drop=True)
     team_games_latest = team_games.groupby('Team').tail(1)
     team_games_latest['Team'] = team_games_latest['Team'].astype(str)
+    team_games_latest['Home ID'] = team_games_latest['Team']
+    team_games_latest['Away ID'] = team_games_latest['Team']
     del team_games_latest["Win"]
 
     ### 4. Home/away game totals, half totals, PPG
@@ -156,28 +158,12 @@ def app():
     # Today's scores
     #######################
     #Merge all stats into today's games
-    def fetch_team_stats(team_df, type, debug=False):
-        # team_df
-        # Team Name | Team Abb | Team ID
-        # type: "home" or "away"
-        # Fetch stats for each team
-        
+    def fetch_team_stats(team_df, type):
         # 1. Home/Away Record
         if type == "Home":
-            # # DEBUGGING
-            # st.dataframe(team_df)
-            # st.dataframe(home_record)
-            # st.write(team_df['Home ID'].dtypes)
-            # st.write(home_record['Home ID'].dtypes)
             team_df = team_df.merge(home_record, on=f"{type} ID", how="left")
         else:
-            # DEBUGGING
-            # st.dataframe(team_df)
-            # st.dataframe(away_record)
-            # st.write(team_df['Away ID'].dtypes)
-            # st.write(away_record['Away ID'].dtypes)
             team_df = team_df.merge(away_record, on=f"{type} ID", how="left")
-        if debug: print(team_df)
 
         # 2. Rolling record
         if type == "Home":
@@ -186,14 +172,12 @@ def app():
         else:
             team_df = team_df.merge(team_games_latest, left_on=f"{type} ID", right_on="Team", how="left") \
                 .rename(columns={"Last5": "Away Last5", "Last10": "Away Last10"})
-        if debug: print(team_df)
 
         # 3. Game/half totals
         if type == "Home":
             team_df = team_df.merge(home_totals, on=f"{type} ID", how="left")
         else:
             team_df = team_df.merge(away_totals, on=f"{type} ID", how="left")
-        if debug: print(team_df)
 
         # 4. Half differentials
         if type == "Home":
@@ -202,7 +186,6 @@ def app():
         else:
             team_df = team_df.merge(away_1h, on=f"{type} ID", how="left")
             team_df = team_df.merge(away_2h, on=f"{type} ID", how="left")
-        if debug: print(team_df)
 
         return team_df
 
@@ -269,15 +252,15 @@ def app():
     today_date = datetime.now().strftime("%Y%m%d") #ex: 20260223
     scoreboard = get_today_games(today_date)
 
-    # DEBUG
-    scoreboard["Team"] = scoreboard["Team"].apply(
-        lambda x: x.iloc[0] if isinstance(x, pd.Series) else x
-    )
-    st.write(scoreboard.dtypes)
-    for col in scoreboard.columns:
-        types = scoreboard[col].apply(type).unique()
-        st.write_stream(col, types)
-    st.dataframe(scoreboard)
+    # # DEBUG
+    # scoreboard["Team"] = scoreboard["Team"].apply(
+    #     lambda x: x.iloc[0] if isinstance(x, pd.Series) else x
+    # )
+    # st.write(scoreboard.dtypes)
+    # for col in scoreboard.columns:
+    #     types = scoreboard[col].apply(type).unique()
+    #     st.write_stream(col, types)
+    # st.dataframe(scoreboard)
 
     ###### Rolling conversions
     scoreboard["Home Last5"] = (scoreboard["Home Last5"]).astype(int)
