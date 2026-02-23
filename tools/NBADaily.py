@@ -145,11 +145,15 @@ def app():
             # DEBUGGING
             st.dataframe(team_df)
             st.dataframe(home_record)
+            st.write(team_df['Home ID'].dtypes)
+            st.write(home_record['Home ID'].dtypes)
             team_df = team_df.merge(home_record, on=f"{type} ID", how="left")
         else:
             # DEBUGGING
             st.dataframe(team_df)
             st.dataframe(away_record)
+            st.write(team_df['Away ID'].dtypes)
+            st.write(away_record['Away ID'].dtypes)
             team_df = team_df.merge(away_record, on=f"{type} ID", how="left")
         if debug: print(team_df)
 
