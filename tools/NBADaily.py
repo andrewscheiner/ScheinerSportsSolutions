@@ -108,8 +108,8 @@ def app():
     team_games["Last10"] = team_games.groupby("Team")["Win"].rolling(10).sum().reset_index(0, drop=True)
     team_games_latest = team_games.groupby('Team').tail(1)
     team_games_latest['Team'] = team_games_latest['Team'].astype(str)
-    team_games_latest['Home ID'] = team_games_latest['Team']
-    team_games_latest['Away ID'] = team_games_latest['Team']
+    # team_games_latest['Home ID'] = team_games_latest['Team']
+    # team_games_latest['Away ID'] = team_games_latest['Team']
     del team_games_latest["Win"]
 
     ### 4. Home/away game totals, half totals, PPG
