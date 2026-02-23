@@ -139,7 +139,6 @@ def app():
         # 1. Home/Away Record
         if type == "Home":
             team_df = team_df.merge(home_record, on=f"{type} ID", how="left")
-            st.dataframe(team_df)
         else:
             team_df = team_df.merge(away_record, on=f"{type} ID", how="left")
         if debug: print(team_df)
@@ -213,6 +212,11 @@ def app():
             home_teams_local_df = pd.DataFrame(home_teams_local, columns=[
                 'Home Team', 'Home Abbreviation', 'Home ID'
             ])
+
+            # DEBUGGING
+            st.dataframe(home_teams_local_df)
+            st.dataframe(home_record)
+
             home_stats = fetch_team_stats(home_teams_local_df, type="Home")
 
             #Get team stats for away team
