@@ -139,6 +139,7 @@ def app():
         # 1. Home/Away Record
         if type == "Home":
             team_df = team_df.merge(home_record, on=f"{type} ID", how="left")
+            st.dataframe(team_df)
         else:
             team_df = team_df.merge(away_record, on=f"{type} ID", how="left")
         if debug: print(team_df)
@@ -230,8 +231,8 @@ def app():
     # Get daily scoreboard
     ###########################
     #Get today's date YYYYMMDD
-    today_date = datetime.now().strftime("%Y%m%d")
-    scoreboard = get_today_games('20260219')
+    today_date = datetime.now().strftime("%Y%m%d") #ex: 20260223
+    scoreboard = get_today_games(today_date)
 
     ###### Rolling conversions
     scoreboard["Home Last5"] = (scoreboard["Home Last5"]).astype(int)
@@ -244,6 +245,7 @@ def app():
        'Home Last5', 'Home Last10', 'Home 1H', 'Home 2H', 'Home 1H Diff', 'Home 2H Diff', 
        'Away Team','Away Wins', 'Away Losses', 'Away PPG', 
        'Away Last5', 'Away Last10', 'Away 1H', 'Away 2H',  'Away 1H Diff', 'Away 2H Diff']]
+    st.dataframe(scoreboard)
 
     #############################
     #### KEY INSIGHTS
