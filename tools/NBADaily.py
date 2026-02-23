@@ -270,11 +270,13 @@ def app():
     scoreboard = get_today_games(today_date)
 
     # DEBUG
+    scoreboard["Team"] = scoreboard["Team"].apply(
+        lambda x: x.iloc[0] if isinstance(x, pd.Series) else x
+    )
     st.write(scoreboard.dtypes)
     for col in scoreboard.columns:
         types = scoreboard[col].apply(type).unique()
-        st.write(col, types)
-
+        st.write_stream(col, types)
     st.dataframe(scoreboard)
 
     ###### Rolling conversions
