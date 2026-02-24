@@ -23,7 +23,7 @@ def app():
                 return [
                     team['team']['displayName'],
                     team['team']['abbreviation'],
-                    str(team['team']['id'])            
+                    team['team']['id']            
                 ]
             # If team is missing score for a postponed game, return blank dataframe
             except: return [None,None,None,None]
@@ -35,7 +35,7 @@ def app():
                 return [
                     team['team']['displayName'],
                     team['team']['abbreviation'],
-                    str(team['team']['id']),
+                    team['team']['id'],
                     int(team['score']),
                     team['linescores'][0]['value'],
                     team['linescores'][1]['value'],
@@ -89,14 +89,14 @@ def app():
     home_record.rename(columns={"sum": "Home Wins", "count": "Home Games"}, inplace=True)
     home_record["Home Losses"] = home_record["Home Games"] - home_record["Home Wins"]
     del home_record["Home Games"]
-    home_record['Home ID'] = home_record.index.astype(str)
+    home_record['Home ID'] = home_record.index.astype(float)
     home_record.index.name = None
 
     away_record = df.groupby("Away ID")["Away Win"].agg(["sum", "count"])
     away_record.rename(columns={"sum": "Away Wins", "count": "Away Games"}, inplace=True)
     away_record["Away Losses"] = away_record["Away Games"] - away_record["Away Wins"]
     del away_record["Away Games"]
-    away_record['Away ID'] = away_record.index.astype(str)
+    away_record['Away ID'] = away_record.index.astype(float)
     away_record.index.name = None
 
     ### 3. Win/loss last 5 and last 10
@@ -107,7 +107,7 @@ def app():
     team_games["Last5"] = team_games.groupby("Team")["Win"].rolling(5).sum().reset_index(0, drop=True)
     team_games["Last10"] = team_games.groupby("Team")["Win"].rolling(10).sum().reset_index(0, drop=True)
     team_games_latest = team_games.groupby('Team').tail(1)
-    team_games_latest['Team'] = team_games_latest['Team'].astype(str)
+    team_games_latest['Team'] = team_games_latest['Team'].astype(float)
     # team_games_latest['Home ID'] = team_games_latest['Team']
     # team_games_latest['Away ID'] = team_games_latest['Team']
     del team_games_latest["Win"]
@@ -116,25 +116,25 @@ def app():
     #Home
     home_totals = df.groupby("Home ID")[["Home 1H", "Home 2H", "Home Score"]].mean().round(0) \
         .rename(columns={"Home Score": "Home PPG"})
-    home_totals['Home ID'] = home_totals.index.astype(str)
+    home_totals['Home ID'] = home_totals.index.astype(float)
     home_totals.index.name = None
     #Away
     away_totals = df.groupby("Away ID")[["Away 1H", "Away 2H", "Away Score"]].mean().round(0) \
         .rename(columns={"Away Score": "Away PPG"})
-    away_totals['Away ID'] = away_totals.index.astype(str)
+    away_totals['Away ID'] = away_totals.index.astype(float)
     away_totals.index.name = None
     
     ### 5. 1H/2H point differentials
     # HOME First half
     home_1h = df.groupby("Home ID")["1H Diff"].mean().round(0).rename("Home 1H Diff")
     home_1h = pd.DataFrame(home_1h)
-    home_1h['Home ID'] = home_1h.index.astype(str)
+    home_1h['Home ID'] = home_1h.index.astype(float)
     home_1h.index.name = None
     # AWAY First half
     away_1h = df.groupby("Away ID")["1H Diff"].apply(lambda x: -x.mean()).round(0) \
         .rename("Away 1H Diff")  # invert because diff is Home - Away
     away_1h = pd.DataFrame(away_1h)
-    away_1h['Away ID'] = away_1h.index.astype(str)
+    away_1h['Away ID'] = away_1h.index.astype(float)
     away_1h.index.name = None
 
     #first_half_diff = home_1h.add(away_1h, fill_value=0)
@@ -143,13 +143,13 @@ def app():
     # HOME
     home_2h = df.groupby("Home ID")["2H Diff"].mean().round(0).rename("Home 2H Diff")
     home_2h = pd.DataFrame(home_2h)
-    home_2h['Home ID'] = home_2h.index.astype(str)
+    home_2h['Home ID'] = home_2h.index.astype(float)
     home_2h.index.name = None
     # AWAY
     away_2h = df.groupby("Away ID")["2H Diff"].apply(lambda x: -x.mean()).round(0) \
             .rename("Away 2H Diff")
     away_2h = pd.DataFrame(away_2h)
-    away_2h['Away ID'] = away_2h.index.astype(str)
+    away_2h['Away ID'] = away_2h.index.astype(float)
     away_2h.index.name = None
 
     #second_half_diff = home_2h.add(away_2h, fill_value=0)
