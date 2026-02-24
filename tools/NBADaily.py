@@ -235,12 +235,14 @@ def app():
             home_teams_local_df = pd.DataFrame(home_teams_local, columns=[
                 'Home Team', 'Home Abbreviation', 'Home ID'
             ])
+            home_teams_local_df['Home ID'] = home_teams_local_df['Home ID'].astype(str)
             home_stats = fetch_team_stats(home_teams_local_df, type="Home")
 
             #Get team stats for away team
             away_teams_local_df = pd.DataFrame(away_teams_local, columns=[
                 'Away Team', 'Away Abbreviation', 'Away ID'
             ])
+            away_teams_local_df['Away ID'] = away_teams_local_df['Away ID'].astype(str)
             away_stats = fetch_team_stats(away_teams_local_df, type="Away")
 
             #Append data
