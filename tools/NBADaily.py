@@ -308,10 +308,30 @@ def app():
         # Favorite
         return int((-100 * p / (1 - p)))
     
+    # Game selection filter
+    st.markdown("---")
+    st.subheader("📊 Game Selection")
+    
+    game_options = ["All Games"] + scoreboard['Home Team'].tolist()
+    selected_game = st.selectbox(
+        "Select a game to view:",
+        game_options,
+        index=0
+    )
+    
+    # Filter scoreboard based on selection
+    if selected_game == "All Games":
+        filtered_scoreboard = scoreboard
+    else:
+        filtered_scoreboard = scoreboard[scoreboard['Home Team'] == selected_game]
+    
+    st.markdown("---")
+    st.subheader("🏀 Scoreboard")
+    st.dataframe(filtered_scoreboard, use_container_width=True)
+    
     # Generate key insights for a user
     # Each row is a game
     def generate_insights(game):
-
         # Print game
         st.write(f"##### {game['Away Team']} @ {game['Home Team']}")    
 
@@ -329,7 +349,6 @@ def app():
             st.write(f"{game['Away Team']} have an implied away moneyline of {pct_to_american(away_win_pct)} based on away record")
         elif away_win_pct <= 0.35:
             st.write(f"{game['Away Team']} have an implied away moneyline of {pct_to_american(away_win_pct)} based on away record")
-
 
         # PPG
         if game['Home PPG'] - game['Away PPG'] >= 10:
@@ -388,6 +407,8 @@ def app():
         elif game["Away 2H"] - game["Home 2H"] >= 5:
             st.write(f"{game['Away Team']} have a strong second half scoring advantage of {game['Away 2H'] - game['Home 2H']} points.")
 
-    #Print insight per game
-    for index, game in scoreboard.iterrows():
+    # Print insights per game
+    st.markdown("---")
+    st.subheader("💡 Game Insights")
+    for _, game in filtered_scoreboard.iterrows():
         generate_insights(game)
