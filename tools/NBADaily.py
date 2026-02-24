@@ -23,7 +23,7 @@ def app():
                 return [
                     team['team']['displayName'],
                     team['team']['abbreviation'],
-                    team['team']['id']            
+                    str(team['team']['id'])            
                 ]
             # If team is missing score for a postponed game, return blank dataframe
             except: return [None,None,None,None]
@@ -35,7 +35,7 @@ def app():
                 return [
                     team['team']['displayName'],
                     team['team']['abbreviation'],
-                    team['team']['id'],
+                    str(team['team']['id']),
                     int(team['score']),
                     team['linescores'][0]['value'],
                     team['linescores'][1]['value'],
@@ -235,14 +235,12 @@ def app():
             home_teams_local_df = pd.DataFrame(home_teams_local, columns=[
                 'Home Team', 'Home Abbreviation', 'Home ID'
             ])
-            home_teams_local_df['Home ID'] = home_teams_local_df['Home ID'].astype(str)
             home_stats = fetch_team_stats(home_teams_local_df, type="Home")
 
             #Get team stats for away team
             away_teams_local_df = pd.DataFrame(away_teams_local, columns=[
                 'Away Team', 'Away Abbreviation', 'Away ID'
             ])
-            away_teams_local_df['Away ID'] = away_teams_local_df['Away ID'].astype(str)
             away_stats = fetch_team_stats(away_teams_local_df, type="Away")
 
             #Append data
@@ -266,7 +264,8 @@ def app():
     # for col in scoreboard.columns:
     #     types = scoreboard[col].apply(type).unique()
     #     st.write_stream(col, types)
-    # st.dataframe(scoreboard)
+    st.write("Scoreboard")
+    st.dataframe(scoreboard)
 
     ###### Rolling conversions
     scoreboard["Home Last5"] = (scoreboard["Home Last5"]).astype(int)
