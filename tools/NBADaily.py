@@ -163,30 +163,30 @@ def app():
         team_df[f"{type} ID"] = team_df[f"{type} ID"].astype(float)
         # 1. Home/Away Record
         if type == "Home":
-            st.dataframe(team_df)
-            st.dataframe(home_record)
+            #st.dataframe(team_df)
+            #st.dataframe(home_record)
             team_df = team_df.merge(home_record, on=f"{type} ID", how="left")
         else:
             team_df = team_df.merge(away_record, on=f"{type} ID", how="left")
 
         # 2. Rolling record
-        st.dataframe(team_df)
-        st.dataframe(team_games_latest)
+        #st.dataframe(team_df)
+        #st.dataframe(team_games_latest)
         team_df = team_df.merge(team_games_latest, left_on=f"{type} ID", right_on="Team", how="left") \
             .rename(columns={"Last5": "Home Last5", "Last10": "Home Last10"})
 
         # 3. Game/half totals
         if type == "Home":
-            st.dataframe(team_df)
-            st.dataframe(home_totals)
+            #st.dataframe(team_df)
+            #st.dataframe(home_totals)
             team_df = team_df.merge(home_totals, on=f"{type} ID", how="left")
         else:
             team_df = team_df.merge(away_totals, on=f"{type} ID", how="left")
 
         # 4. Half differentials
         if type == "Home":
-            st.dataframe(team_df)
-            st.dataframe(home_1h)
+            #st.dataframe(team_df)
+            #st.dataframe(home_1h)
             team_df = team_df.merge(home_1h, on=f"{type} ID", how="left")
             team_df = team_df.merge(home_2h, on=f"{type} ID", how="left")
         else:
@@ -238,14 +238,16 @@ def app():
                 'Home Team', 'Home Abbreviation', 'Home ID'
             ])
             home_stats = fetch_team_stats(home_teams_local_df, type="Home")
-            st.dataframe(home_stats)
+            del home_stats["Team"] 
+            #st.dataframe(home_stats)
 
             #Get team stats for away team
             away_teams_local_df = pd.DataFrame(away_teams_local, columns=[
                 'Away Team', 'Away Abbreviation', 'Away ID'
             ])
             away_stats = fetch_team_stats(away_teams_local_df, type="Away")
-            st.dataframe(away_stats)
+            del away_stats["Team"]
+            #st.dataframe(away_stats)
 
             #Append data
             return pd.concat([home_stats, away_stats], axis=1)
@@ -268,7 +270,7 @@ def app():
     # for col in scoreboard.columns:
     #     types = scoreboard[col].apply(type).unique()
     #     st.write_stream(col, types)
-    st.write("Scoreboard")
+    #st.write("Scoreboard")
     st.dataframe(scoreboard)
 
     ###### Rolling conversions
