@@ -159,6 +159,7 @@ def app():
     #######################
     #Merge all stats into today's games
     def fetch_team_stats(team_df, type):
+        team_df[f"{type} ID"] = team_df[f"{type} ID"].astype(float)
         # 1. Home/Away Record
         if type == "Home":
             st.dataframe(team_df)
