@@ -111,6 +111,7 @@ def app():
     # team_games_latest['Home ID'] = team_games_latest['Team']
     # team_games_latest['Away ID'] = team_games_latest['Team']
     del team_games_latest["Win"]
+    team_games_latest = team_games_latest.reset_index(drop=True)
 
     ### 4. Home/away game totals, half totals, PPG
     #Home
@@ -237,12 +238,14 @@ def app():
                 'Home Team', 'Home Abbreviation', 'Home ID'
             ])
             home_stats = fetch_team_stats(home_teams_local_df, type="Home")
+            st.dataframe(home_stats)
 
             #Get team stats for away team
             away_teams_local_df = pd.DataFrame(away_teams_local, columns=[
                 'Away Team', 'Away Abbreviation', 'Away ID'
             ])
             away_stats = fetch_team_stats(away_teams_local_df, type="Away")
+            st.dataframe(away_stats)
 
             #Append data
             return pd.concat([home_stats, away_stats], axis=1)
