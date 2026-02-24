@@ -266,7 +266,7 @@ def app():
     ###########################
     #Get today's date YYYYMMDD
     today_date = datetime.now().strftime("%Y%m%d") #ex: 20260223
-    st.write(f"#### NBA Scoreboard for {datetime.now().strftime('%B %d, %Y')}")
+    #st.write(f"#### NBA Scoreboard for {datetime.now().strftime('%B %d, %Y')}")
     scoreboard = get_today_games(today_date)
 
     # # DEBUG
@@ -291,7 +291,7 @@ def app():
        'Home Last5', 'Home Last10', 'Home 1H', 'Home 2H', 'Home 1H Diff', 'Home 2H Diff', 
        'Away Team','Away Wins', 'Away Losses', 'Away PPG', 
        'Away Last5', 'Away Last10', 'Away 1H', 'Away 2H',  'Away 1H Diff', 'Away 2H Diff']]
-    st.dataframe(scoreboard)
+    #st.dataframe(scoreboard)
 
     #############################
     #### KEY INSIGHTS
@@ -309,10 +309,10 @@ def app():
         return int((-100 * p / (1 - p)))
     
     # Game selection filter
-    st.markdown("---")
-    st.subheader("📊 Game Selection")
+    #st.markdown("---")
+    st.subheader(f"📊 NBA Scoreboard for {datetime.now().strftime('%B %d, %Y')}")
     
-    game_options = ["All Games"] + scoreboard['Home Team'].tolist()
+    game_options = ["All Games"] + (scoreboard['Away Team'] + " @ " + scoreboard['Home Team']).tolist()
     selected_game = st.selectbox(
         "Select a game to view:",
         game_options,
@@ -325,8 +325,8 @@ def app():
     else:
         filtered_scoreboard = scoreboard[scoreboard['Home Team'] == selected_game]
     
-    st.markdown("---")
-    st.subheader("🏀 Scoreboard")
+    # st.markdown("---")
+    # st.subheader("🏀 Scoreboard")
     st.dataframe(filtered_scoreboard, use_container_width=True)
     
     # Generate key insights for a user
