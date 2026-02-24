@@ -245,7 +245,7 @@ def app():
             ])
             home_stats = fetch_team_stats(home_teams_local_df, type="Home")
             del home_stats["Team"] 
-            st.dataframe(home_stats)
+            #st.dataframe(home_stats)
 
             #Get team stats for away team
             away_teams_local_df = pd.DataFrame(away_teams_local, columns=[
@@ -253,7 +253,7 @@ def app():
             ])
             away_stats = fetch_team_stats(away_teams_local_df, type="Away")
             del away_stats["Team"]
-            st.dataframe(away_stats)
+            #st.dataframe(away_stats)
 
             #Append data
             return pd.concat([home_stats, away_stats], axis=1)
@@ -266,6 +266,7 @@ def app():
     ###########################
     #Get today's date YYYYMMDD
     today_date = datetime.now().strftime("%Y%m%d") #ex: 20260223
+    st.write(f"#### NBA Scoreboard for {datetime.now().strftime('%B %d, %Y')}")
     scoreboard = get_today_games(today_date)
 
     # # DEBUG
@@ -277,7 +278,7 @@ def app():
     #     types = scoreboard[col].apply(type).unique()
     #     st.write_stream(col, types)
     #st.write("Scoreboard")
-    st.dataframe(scoreboard)
+    #st.dataframe(scoreboard)
 
     ###### Rolling conversions
     scoreboard["Home Last5"] = (scoreboard["Home Last5"]).astype(int)
@@ -312,72 +313,72 @@ def app():
     def generate_insights(game):
 
         # Print game
-        print(f"********** {game['Away Team']} @ {game['Home Team']} **********")
+        st.write(f"********** {game['Away Team']} @ {game['Home Team']} **********")
 
         #Record
         home_win_pct = game["Home Wins"] / (game["Home Wins"] + game["Home Losses"])
         if home_win_pct >= 0.6:
-            print(f"{game['Home Team']} have an implied home moneyline of {pct_to_american(home_win_pct)}")
+            st.write(f"{game['Home Team']} have an implied home moneyline of {pct_to_american(home_win_pct)}")
         elif home_win_pct <= 0.35:
-            print(f"{game['Home Team']} have an implied home moneyline of {pct_to_american(home_win_pct)}")
+            st.write(f"{game['Home Team']} have an implied home moneyline of {pct_to_american(home_win_pct)}")
 
 
         # PPG
         if game['Home PPG'] - game['Away PPG'] >= 10:
-            print(f"{game['Home Team']} have a significant scoring advantage of {game['Home PPG'] - game['Away PPG']} points.")
+            st.write(f"{game['Home Team']} have a significant scoring advantage of {game['Home PPG'] - game['Away PPG']} points.")
         elif game['Away PPG'] - game['Home PPG'] >= 10:
-            print(f"{game['Away Team']} have a significant scoring advantage of {game['Away PPG'] - game['Home PPG']} points.")
+            st.write(f"{game['Away Team']} have a significant scoring advantage of {game['Away PPG'] - game['Home PPG']} points.")
         
         #### Last X games
         # 4+ / 5 = good
         # 7+ / 10 = good
         if game["Home Last10"] > 6:
-            print(f"{game['Home Team']} have won {game['Home Last10']} of their last 10 games.")
+            st.write(f"{game['Home Team']} have won {game['Home Last10']} of their last 10 games.")
         elif game["Home Last5"] > 3:
-            print(f"{game['Home Team']} have won {game['Home Last5']} of their last 5 games.")
+            st.write(f"{game['Home Team']} have won {game['Home Last5']} of their last 5 games.")
         if game["Away Last10"] > 6:
-            print(f"{game['Away Team']} have won {game['Away Last10']} of their last 10 games.")
+            st.write(f"{game['Away Team']} have won {game['Away Last10']} of their last 10 games.")
         elif game["Away Last5"] > 3:
-            print(f"{game['Away Team']} have won {game['Away Last5']} of their last 5 games.")
+            st.write(f"{game['Away Team']} have won {game['Away Last5']} of their last 5 games.")
 
         # 0 or 1 games / 5 = bad
         # 0-2 games / 10 = bad
         if game["Home Last10"] <= 2:
-            print(f"{game['Home Team']} have won only {game['Home Last10']} of their last 10 games.")
+            st.write(f"{game['Home Team']} have won only {game['Home Last10']} of their last 10 games.")
         elif game["Home Last5"] <= 1:
-            print(f"{game['Home Team']} have won only {game['Home Last5']} of their last 5 games.")
+            st.write(f"{game['Home Team']} have won only {game['Home Last5']} of their last 5 games.")
         if game["Away Last10"] <= 2:
-            print(f"{game['Away Team']} have won only {game['Away Last10']} of their last 10 games.")
+            st.write(f"{game['Away Team']} have won only {game['Away Last10']} of their last 10 games.")
         elif game["Away Last5"] <= 1:
-            print(f"{game['Away Team']} have won only {game['Away Last5']} of their last 5 games.")
+            st.write(f"{game['Away Team']} have won only {game['Away Last5']} of their last 5 games.")
 
         #Half Diffs
         if game["Home 1H Diff"] >= 5:
-            print(f"{game['Home Team']} have a strong first half differential of {game['Home 1H Diff']} points.")
+            st.write(f"{game['Home Team']} have a strong first half differential of {game['Home 1H Diff']} points.")
         elif game["Home 1H Diff"] <= -5:
-            print(f"{game['Home Team']} have a weak first half differential of {game['Home 1H Diff']} points.")
+            st.write(f"{game['Home Team']} have a weak first half differential of {game['Home 1H Diff']} points.")
         if game["Away 1H Diff"] >= 5:
-            print(f"{game['Away Team']} have a strong first half differential of {game['Away 1H Diff']} points.")
+            st.write(f"{game['Away Team']} have a strong first half differential of {game['Away 1H Diff']} points.")
         elif game["Away 1H Diff"] <= -5:
-            print(f"{game['Away Team']} have a weak first half differential of {game['Away 1H Diff']} points.")
+            st.write(f"{game['Away Team']} have a weak first half differential of {game['Away 1H Diff']} points.")
         if game["Home 2H Diff"] >= 5:
-            print(f"{game['Home Team']} have a strong second half differential of {game['Home 2H Diff']} points.")
+            st.write(f"{game['Home Team']} have a strong second half differential of {game['Home 2H Diff']} points.")
         elif game["Home 2H Diff"] <= -5:
-            print(f"{game['Home Team']} have a weak second half differential of {game['Home 2H Diff']} points.")
+            st.write(f"{game['Home Team']} have a weak second half differential of {game['Home 2H Diff']} points.")
         if game["Away 2H Diff"] >= 5:
-            print(f"{game['Away Team']} have a strong second half differential of {game['Away 2H Diff']} points.")
+            st.write(f"{game['Away Team']} have a strong second half differential of {game['Away 2H Diff']} points.")
         elif game["Away 2H Diff"] <= -5:
-            print(f"{game['Away Team']} have a weak second half differential of {game['Away 2H Diff']} points.")
+            st.write(f"{game['Away Team']} have a weak second half differential of {game['Away 2H Diff']} points.")
         
         #Half Totals
         if game["Home 1H"] - game["Away 1H"] >= 5:
-            print(f"{game['Home Team']} have a strong first half scoring advantage of {game['Home 1H'] - game['Away 1H']} points.")
+            st.write(f"{game['Home Team']} have a strong first half scoring advantage of {game['Home 1H'] - game['Away 1H']} points.")
         elif game["Away 1H"] - game["Home 1H"] >= 5:
-            print(f"{game['Away Team']} have a strong first half scoring advantage of {game['Away 1H'] - game['Home 1H']} points.")
+            st.write(f"{game['Away Team']} have a strong first half scoring advantage of {game['Away 1H'] - game['Home 1H']} points.")
         if game["Home 2H"] - game["Away 2H"] >= 5:
-            print(f"{game['Home Team']} have a strong second half scoring advantage of {game['Home 2H'] - game['Away 2H']} points.")
+            st.write(f"{game['Home Team']} have a strong second half scoring advantage of {game['Home 2H'] - game['Away 2H']} points.")
         elif game["Away 2H"] - game["Home 2H"] >= 5:
-            print(f"{game['Away Team']} have a strong second half scoring advantage of {game['Away 2H'] - game['Home 2H']} points.")
+            st.write(f"{game['Away Team']} have a strong second half scoring advantage of {game['Away 2H'] - game['Home 2H']} points.")
 
     #Print insight per game
     for index, game in scoreboard.iterrows():
