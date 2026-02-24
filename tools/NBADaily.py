@@ -239,7 +239,7 @@ def app():
             ])
             home_stats = fetch_team_stats(home_teams_local_df, type="Home")
             del home_stats["Team"] 
-            #st.dataframe(home_stats)
+            st.dataframe(home_stats)
 
             #Get team stats for away team
             away_teams_local_df = pd.DataFrame(away_teams_local, columns=[
@@ -247,7 +247,7 @@ def app():
             ])
             away_stats = fetch_team_stats(away_teams_local_df, type="Away")
             del away_stats["Team"]
-            #st.dataframe(away_stats)
+            st.dataframe(away_stats)
 
             #Append data
             return pd.concat([home_stats, away_stats], axis=1)
