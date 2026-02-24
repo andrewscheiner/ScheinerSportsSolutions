@@ -13,7 +13,7 @@ mlb_teams = [
 # Fetch schedule and record data for all MLB teams
 schedule_records = []
 for i, team in enumerate(mlb_teams):
-    schedule_records.append(schedule_and_record(2026, team))
+    schedule_records.append(schedule_and_record(2025, team))
 
 # Concatenate all schedule records into a single DataFrame
 df = pd.concat(schedule_records, ignore_index=True)
