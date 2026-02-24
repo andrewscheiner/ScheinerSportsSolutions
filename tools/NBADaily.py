@@ -410,7 +410,7 @@ def app():
             st.write(f"{game['Away Team']} have a strong second half scoring advantage of {game['Away 2H'] - game['Home 2H']} points.")
 
     # Print insights per game
-    st.markdown("---")
     st.subheader("💡 Game Insights")
     for _, game in filtered_scoreboard.iterrows():
         generate_insights(game)
+    st.markdown("---")
