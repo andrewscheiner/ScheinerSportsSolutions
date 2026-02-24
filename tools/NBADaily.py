@@ -313,14 +313,22 @@ def app():
     def generate_insights(game):
 
         # Print game
-        st.write(f"********** {game['Away Team']} @ {game['Home Team']} **********")
+        st.write(f"##### {game['Away Team']} @ {game['Home Team']}")    
 
         #Record
+        ##home
         home_win_pct = game["Home Wins"] / (game["Home Wins"] + game["Home Losses"])
         if home_win_pct >= 0.6:
-            st.write(f"{game['Home Team']} have an implied home moneyline of {pct_to_american(home_win_pct)}")
+            st.write(f"{game['Home Team']} have an implied home moneyline of {pct_to_american(home_win_pct)} based on home record")
         elif home_win_pct <= 0.35:
-            st.write(f"{game['Home Team']} have an implied home moneyline of {pct_to_american(home_win_pct)}")
+            st.write(f"{game['Home Team']} have an implied home moneyline of {pct_to_american(home_win_pct)} based on home record")
+        
+        ##away record
+        away_win_pct = game["Away Wins"] / (game["Away Wins"] + game["Away Losses"])
+        if away_win_pct >= 0.6:
+            st.write(f"{game['Away Team']} have an implied away moneyline of {pct_to_american(away_win_pct)} based on away record")
+        elif away_win_pct <= 0.35:
+            st.write(f"{game['Away Team']} have an implied away moneyline of {pct_to_american(away_win_pct)} based on away record")
 
 
         # PPG
