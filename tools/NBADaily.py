@@ -172,9 +172,15 @@ def app():
         # 2. Rolling record
         #st.dataframe(team_df)
         #st.dataframe(team_games_latest)
-        team_df = team_df.merge(team_games_latest, left_on=f"{type} ID", right_on="Team", how="left") \
-            .rename(columns={"Last5": "Home Last5", "Last10": "Home Last10"})
-
+        if type == "Home":
+            #st.dataframe(team_df)
+            #st.dataframe(home_record)
+            team_df = team_df.merge(team_games_latest, left_on=f"{type} ID", right_on="Team", how="left") \
+                .rename(columns={"Last5": f"{type} Last5", "Last10": f"{type} Last10"})
+        else:
+            team_df = team_df.merge(team_games_latest, left_on=f"{type} ID", right_on="Team", how="left") \
+                .rename(columns={"Last5": f"{type} Last5", "Last10": f"{type} Last10"})
+        
         # 3. Game/half totals
         if type == "Home":
             #st.dataframe(team_df)
