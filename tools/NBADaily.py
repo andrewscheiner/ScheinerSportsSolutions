@@ -161,17 +161,17 @@ def app():
     def fetch_team_stats(team_df, type):
         # 1. Home/Away Record
         if type == "Home":
+            st.dataframe(team_df)
+            st.dataframe(home_record)
             team_df = team_df.merge(home_record, on=f"{type} ID", how="left")
         else:
             team_df = team_df.merge(away_record, on=f"{type} ID", how="left")
 
         # 2. Rolling record
-        if type == "Home":
-            team_df = team_df.merge(team_games_latest, left_on=f"{type} ID", right_on="Team", how="left") \
-                .rename(columns={"Last5": "Home Last5", "Last10": "Home Last10"})
-        else:
-            team_df = team_df.merge(team_games_latest, left_on=f"{type} ID", right_on="Team", how="left") \
-                .rename(columns={"Last5": "Away Last5", "Last10": "Away Last10"})
+        st.dataframe(team_df)
+        st.dataframe(team_games_latest)
+        team_df = team_df.merge(team_games_latest, left_on=f"{type} ID", right_on="Team", how="left") \
+            .rename(columns={"Last5": "Home Last5", "Last10": "Home Last10"})
 
         # 3. Game/half totals
         if type == "Home":
@@ -183,6 +183,8 @@ def app():
 
         # 4. Half differentials
         if type == "Home":
+            st.dataframe(team_df)
+            st.dataframe(home_1h)
             team_df = team_df.merge(home_1h, on=f"{type} ID", how="left")
             team_df = team_df.merge(home_2h, on=f"{type} ID", how="left")
         else:
