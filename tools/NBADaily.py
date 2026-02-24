@@ -319,11 +319,13 @@ def app():
         index=0
     )
     
+    #add game info to scoreboard for filtering
+    scoreboard['Game'] = scoreboard['Away Team'] + " @ " + scoreboard['Home Team']
     # Filter scoreboard based on selection
     if selected_game == "All Games":
         filtered_scoreboard = scoreboard
     else:
-        filtered_scoreboard = scoreboard[scoreboard['Home Team'] == selected_game]
+        filtered_scoreboard = scoreboard[scoreboard['Game'] == selected_game]
     
     # st.markdown("---")
     # st.subheader("🏀 Scoreboard")
