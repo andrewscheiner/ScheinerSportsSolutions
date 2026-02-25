@@ -3,6 +3,16 @@ import pandas as pd
 import pybaseball
 from pybaseball import schedule_and_record
 from datetime import datetime, time
+import requests
+
+### TESTING
+pybaseball.cache.enable()
+pybaseball.request_headers = {"User-Agent": "Mozilla/5.0"}
+
+url = "https://www.baseball-reference.com/teams/TEX/2025-schedule-scores.shtml"
+print(requests.get(url).status_code)
+print(requests.get(url).text[:500])
+
 
 #run pybaseball to create initial data
 mlb_teams = [
