@@ -10,5 +10,8 @@ def app():
 
     #load in previous data - get datetime of last run
     pre_data = pd.read_csv(r'data/runs_given_up.csv', index_col='Tm')
-    #st.dataframe(pre_data.sort_values(by="Matches", ascending=False))
-    st.dataframe(pre_data)
+    #convert matches column to int
+    pre_data['Matches'] = pre_data['Matches'].astype(int)
+    #sort by matches
+    final_data = pre_data.sort_values(by="Matches", ascending=False)
+    st.dataframe(final_data)
