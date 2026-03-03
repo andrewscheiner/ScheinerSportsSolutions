@@ -1,63 +1,104 @@
-
-import pandas as pd
-import pybaseball
-from pybaseball import schedule_and_record
-from datetime import datetime, time
 import requests
+import json
+import datetime
+from datetime import datetime, timedelta
+import pandas as pd
 
-### TESTING
-pybaseball.cache.enable()
-pybaseball.request_headers = {"User-Agent": "Mozilla/5.0"}
+# Generate list of dates from March 27, 2025 to today
+start_date = datetime(2025, 3, 27)
+end_date = datetime(2025, 9, 28)
 
-url = "https://www.baseball-reference.com/teams/TEX/2025-schedule-scores.shtml"
-print(requests.get(url).status_code)
-print(requests.get(url).text[:500])
+dates = []
+current_date = start_date
+while current_date <= end_date:
+    dates.append(current_date.strftime("%Y%m%d"))
+    current_date += timedelta(days=1)
 
+# Collect data for each team
+def appendData(ht, at, date_x):
+    date_y = datetime.strptime(date_x, "%Y%m%d").date()
+    # Append team data with error handling for missing line scores
+    try:
+        return pd.DataFrame(
+            [
+                [
+                    ht['team']['abbreviation'],
+                    int(at['score']),
+                    date_y
+                ], 
+                [
+                    at['team']['abbreviation'],
+                    int(ht['score']),
+                    date_y
+                ]
+            ],
+            columns=['Abbr', 'RGA', 'Date']
+        )
+    # If team is missing score for a postponed game, return blank dataframe
+    except: return pd.DataFrame([[None,None,None],[None,None,None]])
 
-#run pybaseball to create initial data
-mlb_teams = [
-    'ARI', 'ATL', 'BAL', 'BOS', 'CHC', 'CHW', 'CIN', 'CLE', 'COL', 'DET',
-    'HOU', 'KCR', 'LAA', 'LAD', 'MIA', 'MIL', 'MIN', 'NYM', 'NYY', 'ATH',
-    'PHI', 'PIT', 'SDP', 'SFG', 'SEA', 'STL', 'TBR', 'TEX', 'TOR', 'WSN'
-]
-# Fetch schedule and record data for all MLB teams
-schedule_records = []
-for i, team in enumerate(mlb_teams):
-    schedule_records.append(schedule_and_record(2025, team))
+# Function to get daily scoreboard data
+def mlb_scoreboard(date):
+    try:
+        url = f"https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates={date}"
 
-# Concatenate all schedule records into a single DataFrame
-df = pd.concat(schedule_records, ignore_index=True)
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()  # Raise error for bad status codes
+        data = response.json()
 
-#only keep rows with data after Japan series
-df['Date'] = df['Date'].astype(str)
-df = df[~((df['Date']=='Tuesday, Mar 18') | (df['Date']=='Wednesday, Mar 19'))]
+        #Find games
+        games = data.get("events", [])
+        if not games:
+            print("No games found.")
 
-#only keep rows with runs data
-df = df[df['R'].notnull()]
+        #initialize a dataframe to store daily scoreboard info
+        game_info = pd.DataFrame(
+            columns=['Abbr', 'RGA', 'Date']
+        )
 
-# Add a column for runs given up (opponent's score)
-df['Runs Allowed'] = df['RA'].astype(int) 
+        #For each game, get game info
+        for game in games:
+            #Teams
+            teams = game["competitions"][0]["competitors"]
+            #Home
+            home = teams[0]
+            #Away
+            away = teams[1]
+            #Get team names and scores
+            #print(appendData(home, away))
+            game_info = pd.concat([game_info, appendData(home, away, date)], axis=0).reset_index(drop=True)
+        
+        #Create dataframe
+        return game_info
+            
+    except requests.RequestException as e:
+        print(f"Error fetching data: {e}")
 
-# Group by team and runs given up and count occurrences
-runs_given_up = df.groupby(['Tm', 'Runs Allowed']).size().unstack(fill_value=0)
+curr_season_scores = pd.DataFrame()
 
-# #load in runs_given_up
-# runs_given_up = pd.read_csv('runs_given_up.csv', index_col='Tm')
+# Try to load existing data, if not found fetch new data and save
+try:
+    curr_season_scores = pd.read_csv('mlb_scores.csv')
+    print("Existing data fetched.")
+except FileNotFoundError:
+    print("No existing data file found. Starting fresh.")
+    for i in dates:
+        print(f"Fetching data for date: {i}")
+        curr_season_scores = pd.concat([curr_season_scores, mlb_scoreboard(i)], axis=0)
+        print(f"Completed for date: {i}")
+        print("-" * 40)
+    print("All data fetched.")
+    curr_season_scores.to_csv('mlb_scores.csv', index=False)
 
-#create column for games played
-#use -1 to keep stats for how many games a team played - need to consider when runs allowed >13
-runs_given_up['-1'] = runs_given_up.sum(axis=1) #GAMES PLAYED
-#convert columns to numbers (ints)
-runs_given_up.columns = runs_given_up.columns.astype(int)
-#keep only columns of 13 or less runs
-runs_given_up = runs_given_up.loc[:, runs_given_up.columns <= 13]
-#add column for matches
-runs_given_up['Matches'] = ((runs_given_up > 0).sum(axis=1))-1
-#change column name to specify games played
-runs_given_up = runs_given_up.rename({-1: 'Games'}, axis=1)
+# Get list of mlb teams
+mlb_teams = (curr_season_scores['Abbr'].unique())
+print(len(mlb_teams))
+
+# Create a pivot table to count occurrences of each run total given up by each team
+runs_given_up = curr_season_scores.groupby(['Abbr', 'RGA']).size().unstack(fill_value=0)
 
 # List of columns
-columns = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 'Matches', 'Games']
+columns = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 
 # Initialize the DataFrame with zeros
 data = {col: [0] * len(mlb_teams) for col in columns}
@@ -68,13 +109,23 @@ ryp = pd.DataFrame(data, index=mlb_teams)
 #update runs given up using the standard RYP table format
 ryp.update(runs_given_up)
 
-#sort by matches
-ryp = ryp.sort_values(by='Matches', ascending=False)
+#delete AL and NL from ryp table
+ryp = ryp.drop(['AL', 'NL'], axis=0, errors='ignore')
 
 # Convert all values in the DataFrame to integers
 ryp = ryp.astype(int)
 
-# Add column for datetime
-ryp['Last Updated'] = pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')
+#create column for games played
+#use -1 to keep stats for how many games a team played - need to consider when runs allowed >13
+ryp['-1'] = ryp.sum(axis=1) #GAMES PLAYED
+#convert columns to numbers (ints)
+ryp.columns = ryp.columns.astype(int)
+#keep only columns of 13 or less runs
+ryp = ryp.loc[:, ryp.columns <= 13]
+#add column for matches
+ryp['Matches'] = ((ryp > 0).sum(axis=1))-1
+#change column name to specify games played
+ryp = ryp.rename({-1: 'Games'}, axis=1)
+
 #save to csv for faster loading
 ryp.to_csv(r'data/runs_given_up.csv', index_label='Tm')
