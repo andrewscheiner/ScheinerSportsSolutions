@@ -74,21 +74,15 @@ def mlb_scoreboard(date):
     except requests.RequestException as e:
         print(f"Error fetching data: {e}")
 
+# Fetch data for season
 curr_season_scores = pd.DataFrame()
-
-# Try to load existing data, if not found fetch new data and save
-try:
-    curr_season_scores = pd.read_csv('mlb_scores.csv')
-    print("Existing data fetched.")
-except FileNotFoundError:
-    print("No existing data file found. Starting fresh.")
-    for i in dates:
-        print(f"Fetching data for date: {i}")
-        curr_season_scores = pd.concat([curr_season_scores, mlb_scoreboard(i)], axis=0)
-        print(f"Completed for date: {i}")
-        print("-" * 40)
-    print("All data fetched.")
-    curr_season_scores.to_csv('mlb_scores.csv', index=False)
+for i in dates:
+    print(f"Fetching data for date: {i}")
+    curr_season_scores = pd.concat([curr_season_scores, mlb_scoreboard(i)], axis=0)
+    print(f"Completed for date: {i}")
+    print("-" * 40)
+print("All data fetched.")
+curr_season_scores.to_csv('mlb_scores.csv', index=False)
 
 # Get list of mlb teams
 mlb_teams = (curr_season_scores['Abbr'].unique())

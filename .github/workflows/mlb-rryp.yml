@@ -25,7 +25,7 @@ jobs:
       - name: Install dependencies
         run: |
             pip install --upgrade pip
-            pip install pandas==2.2.0 pybaseball==2.2.7 
+            pip install pandas
       - name: Execute Python Script
         run: |
             python mlb-rryp.py
