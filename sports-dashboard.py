@@ -9,21 +9,9 @@ st.set_page_config(
 st.set_page_config(page_title="Andrew Scheiner's Sports Dashboard", page_icon=":trophy:", layout="wide")
 
 # Replace with the path or URL to your image
-background_image_url = "https://raw.githubusercontent.com/andrewscheiner/andrewscheiner.github.io/refs/heads/main/assets/heatmap0.png"
 
 page_bg_css = f"""
 <style>
-[data-testid="stAppViewContainer"] {{
-    background-image: url("{background_image_url}");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-}}
-
-[data-testid="stHeader"] {{
-    background: rgba(0,0,0,0);  /* transparent header */
-}}
-
 [data-testid="stToolbar"] {{
     right: 2rem;
 }}
