@@ -1,0 +1,54 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+
+# Virtual environments
+.env
+.venv/
+venv/
+env/
+ENV/
+
+# Editor/IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python test / build
+htmlcov/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+dist/
+build/
+*.egg-info/
+
+# Streamlit secrets and local config
+.streamlit/secrets.toml
+.streamlit/credentials.toml
+.streamlit/credentials.toml.lock
+
+# Local SQLite DB (do not commit)
+users.db
+*.db
+
+# Local logs and runtime files
+*.log
+*.pid
+
+# OAuth / token caches and local credentials
+token.json
+oauth_token.json
+google-credentials.json
+
+# Misc
+node_modules/
