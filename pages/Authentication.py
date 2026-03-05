@@ -30,7 +30,7 @@ if "code" in query_params and st.session_state.get("user") is None:
 # Main UI
 st.title("Authentication")
 
-st.write("REDIRECT_URI used by app:", st.secrets.get("REDIRECT_URI"))
+#st.write("REDIRECT_URI used by app:", st.secrets.get("REDIRECT_URI"))
 
 if st.session_state["user"] is None:
     st.write("You are not signed in.")
