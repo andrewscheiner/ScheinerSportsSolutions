@@ -4,9 +4,8 @@ st.set_page_config(
     page_title="Andrew Scheiner's Sports Dashboard",
     page_icon=":trophy:",
     layout="wide",
-    initial_sidebar_state="expanded")
-
-st.set_page_config(page_title="Andrew Scheiner's Sports Dashboard", page_icon=":trophy:", layout="wide")
+    initial_sidebar_state="expanded"
+)
 
 st.title('Scheiner Sports Solutions')
 st.markdown('An interactive Streamlit dashboard containing multiple sports solutions \
@@ -15,7 +14,7 @@ st.markdown('An interactive Streamlit dashboard containing multiple sports solut
 ##########################
 #### Revamp home page ####
 ##########################
-# Import each page as a module
+# Import each page as a module (only /tools now)
 import tools.BettingSystems as betting_systems
 import tools.NFLPowerRankings as nfl
 import tools.PitcherProps as pitcher
@@ -43,8 +42,6 @@ if cols[2].button("⚾ Pitcher Props"):
 if cols[3].button("🪜 Laddering Tool"):
     st.session_state.page = "ladder"
 
-
-
 # -------------------------------
 # Seasonal Tools Section (1x4)
 # -------------------------------
@@ -59,10 +56,10 @@ if cols2[2].button("🧊 Slump Detector"):
 if cols2[3].button("🔄 MLB Runs Given Up / Reverse Run Your Pool"):
     st.session_state.page = "reverse_pool"
 
-# Render selected page
+# Render selected page (only /tools)
 if st.session_state.page == "betting_systems":
     betting_systems.app()
-if st.session_state.page == "nba_daily":
+elif st.session_state.page == "nba_daily":
     nba_daily.app()
 elif st.session_state.page == "nfl":
     nfl.app()

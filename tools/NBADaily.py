@@ -213,8 +213,8 @@ def app():
             response.raise_for_status()  # Raise error for bad status codes
             data = response.json()
             # Save JSON
-            with open('nba_scoreboard.json', 'w') as f:
-                json.dump(data, f, indent=2)
+            # with open('nba_scoreboard.json', 'w') as f:
+            #     json.dump(data, f, indent=2)
 
             #Find games
             games = data.get("events", [])
