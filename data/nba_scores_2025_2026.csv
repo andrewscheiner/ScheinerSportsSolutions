@@ -596,13 +596,6 @@ New Orleans Pelicans,NO,3,116.0,31.0,34.0,27.0,24.0,Denver Nuggets,DEN,7,122.0,3
 Oklahoma City Thunder,OKC,25,119.0,32.0,23.0,40.0,24.0,San Antonio Spurs,SA,24,98.0,26.0,26.0,24.0,22.0
 Los Angeles Lakers,LAL,13,141.0,37.0,44.0,21.0,39.0,Atlanta Hawks,ATL,1,116.0,30.0,30.0,26.0,30.0
 Golden State Warriors,GS,9,119.0,38.0,29.0,28.0,24.0,Portland Trail Blazers,POR,22,97.0,24.0,17.0,30.0,26.0
-Indiana Pacers,IND,11,101.0,18.0,30.0,30.0,23.0,Toronto Raptors,TOR,28,115.0,39.0,28.0,27.0,21.0
-Philadelphia 76ers,PHI,20,107.0,18.0,29.0,28.0,32.0,Cleveland Cavaliers,CLE,5,133.0,33.0,27.0,33.0,40.0
-Chicago Bulls,CHI,4,128.0,36.0,35.0,23.0,34.0,Utah Jazz,UTAH,26,126.0,39.0,23.0,32.0,32.0
-New Orleans Pelicans,NO,3,116.0,27.0,27.0,33.0,29.0,Brooklyn Nets,BKN,17,113.0,31.0,24.0,32.0,26.0
-Dallas Mavericks,DAL,6,109.0,23.0,23.0,32.0,31.0,Denver Nuggets,DEN,7,118.0,29.0,34.0,25.0,30.0
-Sacramento Kings,SAC,23,112.0,32.0,24.0,40.0,16.0,New York Knicks,NY,18,101.0,17.0,25.0,34.0,25.0
-LA Clippers,LAC,12,119.0,37.0,33.0,26.0,23.0,Washington Wizards,WSH,27,105.0,22.0,29.0,38.0,16.0
 Orlando Magic,ORL,19,118.0,23.0,35.0,26.0,34.0,Memphis Grizzlies,MEM,29,111.0,39.0,28.0,12.0,32.0
 Detroit Pistons,DET,8,108.0,23.0,33.0,33.0,19.0,Phoenix Suns,PHX,21,105.0,32.0,31.0,27.0,15.0
 Miami Heat,MIA,14,114.0,36.0,28.0,29.0,21.0,Boston Celtics,BOS,2,119.0,25.0,29.0,29.0,36.0
@@ -971,11 +964,17 @@ Brooklyn Nets,BKN,17,126.0,33.0,32.0,26.0,35.0,Memphis Grizzlies,MEM,29,115.0,31
 Oklahoma City Thunder,OKC,25,129.0,37.0,29.0,30.0,33.0,Denver Nuggets,DEN,7,126.0,40.0,20.0,33.0,33.0
 Utah Jazz,UTAH,26,119.0,29.0,30.0,32.0,28.0,Golden State Warriors,GS,9,116.0,27.0,28.0,29.0,32.0
 LA Clippers,LAC,12,126.0,28.0,36.0,24.0,38.0,New York Knicks,NY,18,118.0,24.0,31.0,26.0,37.0
-,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,
+Philadelphia 76ers,PHI,20,139.0,32.0,36.0,30.0,41.0,Memphis Grizzlies,MEM,29,129.0,32.0,39.0,33.0,25.0
+Brooklyn Nets,BKN,17,100.0,27.0,13.0,33.0,27.0,Detroit Pistons,DET,8,138.0,38.0,35.0,32.0,33.0
+Miami Heat,MIA,14,150.0,40.0,36.0,37.0,37.0,Washington Wizards,WSH,27,129.0,29.0,33.0,35.0,32.0
+Atlanta Hawks,ATL,1,124.0,40.0,24.0,31.0,29.0,Dallas Mavericks,DAL,6,112.0,26.0,27.0,38.0,21.0
+Houston Rockets,HOU,10,113.0,29.0,29.0,28.0,27.0,Toronto Raptors,TOR,28,99.0,29.0,20.0,34.0,16.0
+Milwaukee Bucks,MIL,15,114.0,30.0,35.0,32.0,17.0,Phoenix Suns,PHX,21,129.0,36.0,26.0,38.0,29.0
+San Antonio Spurs,SA,24,125.0,29.0,29.0,39.0,28.0,Boston Celtics,BOS,2,116.0,31.0,27.0,32.0,26.0
+Golden State Warriors,GS,9,124.0,30.0,21.0,32.0,35.0,Chicago Bulls,CHI,4,130.0,26.0,31.0,32.0,29.0
+Portland Trail Blazers,POR,22,101.0,34.0,21.0,27.0,19.0,Charlotte Hornets,CHA,30,103.0,20.0,26.0,32.0,25.0
+Sacramento Kings,SAC,23,114.0,24.0,18.0,30.0,42.0,Indiana Pacers,IND,11,109.0,25.0,34.0,23.0,27.0
+Los Angeles Lakers,LAL,13,120.0,16.0,29.0,39.0,36.0,Minnesota Timberwolves,MIN,16,106.0,21.0,24.0,23.0,38.0
 ,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,
