@@ -4,15 +4,19 @@ import datetime
 from datetime import datetime, timedelta
 import pandas as pd
 
-# Generate list of dates from March 27, 2025 to today
-start_date = datetime(2025, 3, 27)
-end_date = datetime(2025, 9, 28)
+# Generate list of dates
+start_date = datetime(2026, 3, 25)
+end_date = datetime.today()
 
-dates = []
-current_date = start_date
-while current_date <= end_date:
-    dates.append(current_date.strftime("%Y%m%d"))
-    current_date += timedelta(days=1)
+if start_date <= end_date:
+    dates = []
+    current_date = start_date
+    while current_date <= end_date:
+        dates.append(current_date.strftime("%Y%m%d"))
+        current_date += timedelta(days=1)
+    print(dates)
+else:
+    raise ValueError("Start date must be before or equal to end date")
 
 # Collect data for each team
 def appendData(ht, at, date_x):
@@ -86,6 +90,9 @@ curr_season_scores.to_csv('mlb_scores.csv', index=False)
 
 # Get list of mlb teams
 mlb_teams = (curr_season_scores['Abbr'].unique())
+#['KC', 'MIN', 'BAL', 'TEX', 'MIA', 'CHW', 'CIN', 'PIT', 'PHI', 'WSH', \
+#'TOR', 'COL', 'ATL', 'ATH', 'CHC', 'LAA', 'MIL', 'TB', 'STL', 'NYM', \
+#'HOU', 'BOS', 'SEA', 'NYY', 'SD', 'SF', 'LAD', 'CLE', 'ARI', 'DET']
 print(len(mlb_teams))
 
 # Create a pivot table to count occurrences of each run total given up by each team
