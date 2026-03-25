@@ -1,13 +1,9 @@
 ##################################################
-# Streamlit
-##################################################
-import streamlit as st
-import pandas as pd
-##################################################
-
-##################################################
 # Daily Pitcher Props
 ##################################################
+#packages
+import streamlit as st
+import pandas as pd
 import pybaseball as pyb
 import statsapi
 from scipy.stats import rankdata
@@ -18,6 +14,7 @@ import openpyxl
 from openpyxl.utils.dataframe import dataframe_to_rows
 ##################################################
 
+#initialize pitcher prop page
 def app():
     st.set_page_config(page_title="Pitcher Props", page_icon="⚾", layout="wide")
 
@@ -60,7 +57,17 @@ def app():
         'Toronto Blue Jays':'TOR',
         'Washington Nationals':'WSN'}
         return col.map(teamInitialsMapping)
-    pitch = pyb.pitching_stats(2025, qual=10)
+
+    today = datetime.today().strftime('%m/%d/%Y')
+    useNextSeason = '04/10/2026'
+    if today >= useNextSeason:
+        #Get pitching stats from Pybaseball/Fangraphs
+        pitch = pyb.pitching_stats(2026, qual=0)
+    else:
+        #Get pitching stats from Pybaseball/Fangraphs
+        pitch = pyb.pitching_stats(2025, qual=10)
+    st.markdown(f"After {useNextSeason}, the data used for these models will reflect 2026. Currently using 2025 data.")
+
     #get relevant columns
     pitch = pitch[['Name', 'IP', 'G', 'TBF', 'BB%', 'K%', 'SwStr%', 'Swing%', 'Balls', 'Pitches', \
         'HR/9', 'HardHit%', 'FB%']]

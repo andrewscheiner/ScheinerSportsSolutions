@@ -9,8 +9,7 @@ st.set_page_config(
 st.set_page_config(page_title="Andrew Scheiner's Sports Dashboard", page_icon=":trophy:", layout="wide")
 
 st.title('Scheiner Sports Solutions')
-st.markdown('An interactive Streamlit dashboard containing multiple sports solutions \
-         for fantasy and betting help. Designed by Andrew Scheiner.')
+st.markdown('Sports betting, fantasy sports, and game tools designed by Andrew Scheiner.')
 
 ##########################
 #### Revamp home page ####
