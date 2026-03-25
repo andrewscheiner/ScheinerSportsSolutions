@@ -9,7 +9,12 @@ st.set_page_config(
 st.set_page_config(page_title="Andrew Scheiner's Sports Dashboard", page_icon=":trophy:", layout="wide")
 
 #st.title('Scheiner Sports Solutions')
-st.image("/logos/logo-light.png", caption=None, width=None, use_column_width=False, clamp=False, output_format="auto")
+st.markdown(
+    """
+    <img src="logos/logo-light.png" style="height:60px;">
+    """,
+    unsafe_allow_html=True
+)
 
 st.markdown('Sports betting, fantasy sports, and game tools designed by Andrew Scheiner.')
 
