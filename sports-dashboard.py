@@ -11,7 +11,7 @@ st.set_page_config(page_title="Andrew Scheiner's Sports Dashboard", page_icon=":
 #st.title('Scheiner Sports Solutions')
 st.markdown(
     """
-    <img src="logos/logo-light.png" style="height:60px;">
+    <img src="https://raw.githubusercontent.com/andrewscheiner/ScheinerSportsSolutions/refs/heads/main/logos/logo-light.png" style="height:60px;">
     """,
     unsafe_allow_html=True
 )
