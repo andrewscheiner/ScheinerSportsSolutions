@@ -14,7 +14,7 @@ if start_date <= end_date:
     while current_date <= end_date:
         dates.append(current_date.strftime("%Y%m%d"))
         current_date += timedelta(days=1)
-    print(dates)
+    #print(dates)
 else:
     raise ValueError("Start date must be before or equal to end date")
 
@@ -80,26 +80,27 @@ def mlb_scoreboard(date):
 
 # Fetch data for season
 curr_season_scores = pd.DataFrame()
-for i in dates:
-    print(f"Fetching data for date: {i}")
-    curr_season_scores = pd.concat([curr_season_scores, mlb_scoreboard(i)], axis=0)
-    print(f"Completed for date: {i}")
-    print("-" * 40)
-print("All data fetched.")
-curr_season_scores.to_csv('mlb_scores.csv', index=False)
+for i in range(len(dates)-1):
+    #print(f"Fetching data for date: {dates[i]}")
+    curr_season_scores = pd.concat([curr_season_scores, mlb_scoreboard(dates[i])], axis=0)
+    #print(f"Completed for date: {dates[i]}")
+    #print("-" * 40)
+#print("All data fetched.")
+#curr_season_scores.to_csv('data/mlb_scores.csv', index=False)
 
 # Get list of mlb teams
-mlb_teams = (curr_season_scores['Abbr'].unique())
-#['KC', 'MIN', 'BAL', 'TEX', 'MIA', 'CHW', 'CIN', 'PIT', 'PHI', 'WSH', \
-#'TOR', 'COL', 'ATL', 'ATH', 'CHC', 'LAA', 'MIL', 'TB', 'STL', 'NYM', \
-#'HOU', 'BOS', 'SEA', 'NYY', 'SD', 'SF', 'LAD', 'CLE', 'ARI', 'DET']
-print(len(mlb_teams))
+#mlb_teams = (curr_season_scores['Abbr'].unique())
+mlb_teams = ['KC', 'MIN', 'BAL', 'TEX', 'MIA', 'CHW', 'CIN', 'PIT', 'PHI', 'WSH', \
+'TOR', 'COL', 'ATL', 'ATH', 'CHC', 'LAA', 'MIL', 'TB', 'STL', 'NYM', \
+'HOU', 'BOS', 'SEA', 'NYY', 'SD', 'SF', 'LAD', 'CLE', 'ARI', 'DET']
+#print(len(mlb_teams))
 
 # Create a pivot table to count occurrences of each run total given up by each team
 runs_given_up = curr_season_scores.groupby(['Abbr', 'RGA']).size().unstack(fill_value=0)
+runs_given_up['Games'] = runs_given_up.sum(axis=1)
 
 # List of columns
-columns = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+columns = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 'Games']
 
 # Initialize the DataFrame with zeros
 data = {col: [0] * len(mlb_teams) for col in columns}
@@ -116,17 +117,9 @@ ryp = ryp.drop(['AL', 'NL'], axis=0, errors='ignore')
 # Convert all values in the DataFrame to integers
 ryp = ryp.astype(int)
 
-#create column for games played
-#use -1 to keep stats for how many games a team played - need to consider when runs allowed >13
-ryp['-1'] = ryp.sum(axis=1) #GAMES PLAYED
-#convert columns to numbers (ints)
-ryp.columns = ryp.columns.astype(int)
-#keep only columns of 13 or less runs
-ryp = ryp.loc[:, ryp.columns <= 13]
-#add column for matches
-ryp['Matches'] = ((ryp > 0).sum(axis=1))-1
-#change column name to specify games played
-ryp = ryp.rename({-1: 'Games'}, axis=1)
+# Add a column to count the number of matches for each team
+ryp['Matches'] = ((ryp.loc[:, 0:13] > 0).sum(axis=1))
+ryp
 
 #save to csv for faster loading
 ryp.to_csv(r'data/runs_given_up.csv', index_label='Tm')
