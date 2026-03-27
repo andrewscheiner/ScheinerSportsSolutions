@@ -12,6 +12,14 @@ def app():
     pre_data = pd.read_csv(r'data/runs_given_up.csv', index_col='Tm')
     #convert matches column to int
     pre_data['Matches'] = pre_data['Matches'].astype(int)
+
     #sort by matches
     final_data = pre_data.sort_values(by="Matches", ascending=False)
-    st.dataframe(final_data)
+
+    #highlight matches
+    def highlight_win_pct(val):
+        if val > 0:
+            return "background-color: #c6f6d5"   # light green
+    
+    #print final dataframe
+    st.dataframe(final_data.style.applymap(highlight_win_pct, subset=final_data.columns[0:14]))

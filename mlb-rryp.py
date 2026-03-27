@@ -119,7 +119,7 @@ ryp = ryp.astype(int)
 
 # Add a column to count the number of matches for each team
 ryp['Matches'] = ((ryp.loc[:, 0:13] > 0).sum(axis=1))
-ryp
+#ryp
 
 #save to csv for faster loading
 ryp.to_csv(r'data/runs_given_up.csv', index_label='Tm')
