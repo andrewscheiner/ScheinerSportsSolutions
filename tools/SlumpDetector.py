@@ -29,7 +29,8 @@ def app():
 
     st.write(f"Selected: {selected_player}")
 
-    data = statcast_batter('2025-04-01', '2025-09-30', player_id)
+    #get data for selected player for 2026 season
+    data = statcast_batter('2026-03-25', '2026-10-01', player_id)
 
     at_bats = data.groupby(['game_pk', 'at_bat_number']).head(1)
 
