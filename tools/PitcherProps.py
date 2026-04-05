@@ -59,14 +59,15 @@ def app():
         return col.map(teamInitialsMapping)
 
     today = datetime.today().strftime('%m/%d/%Y')
-    useNextSeason = '04/10/2026'
+    useNextSeason = '04/05/2026'
     if today >= useNextSeason:
         #Get pitching stats from Pybaseball/Fangraphs
         pitch = pyb.pitching_stats(2026, qual=0)
+        st.markdown(f"Currently using 2026 data.")
     else:
         #Get pitching stats from Pybaseball/Fangraphs
         pitch = pyb.pitching_stats(2025, qual=10)
-    st.markdown(f"After {useNextSeason}, the data used for these models will reflect 2026. Currently using 2025 data.")
+        st.markdown(f"After {useNextSeason}, the data used for these models will reflect 2026. Currently using 2025 data.")
 
     #get relevant columns
     pitch = pitch[['Name', 'IP', 'G', 'TBF', 'BB%', 'K%', 'SwStr%', 'Swing%', 'Balls', 'Pitches', \
