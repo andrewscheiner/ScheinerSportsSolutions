@@ -46,11 +46,6 @@ tbody td {
     color: #1a1c1e;
 }
 
-/* Zebra striping */
-tbody tr:nth-child(even) {
-    background-color: #CAEBEB;
-}
-
 /* Hover effect */
 tbody tr:hover {
     background-color: #e8f5f5;
