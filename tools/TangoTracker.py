@@ -14,7 +14,21 @@ def app():
     season = int(datetime.now().year)
     def get_pitching_leaders(lg):
         #get 2024 pitching stat leaders for given league
-        cy_young = pyb.pitching_stats(season,season,league=lg)
+        try:
+            cy_young = pyb.pitching_stats(season,season,league=lg)
+        except Exception:
+            st.markdown("""
+                <div style="
+                    padding: 20px;
+                    border-left: 6px solid #cc0000;
+                    border-radius: 6px;
+                    font-size: 1.1rem;
+                    margin-top: 20px;
+                ">
+                    <strong>Pybaseball and Fangraphs are currently unavailable.</strong><br>
+                    Apologies for the inconvenience. Please check back later to see the latest Tango CY Young Tracker updates.
+                </div>
+            """, unsafe_allow_html=True)
         #calculate tango cy young points
         cy_young["Tango"] = ((cy_young["IP"]/2) - cy_young["ER"]) + \
                             (cy_young["SO"]/10) + cy_young["W"]

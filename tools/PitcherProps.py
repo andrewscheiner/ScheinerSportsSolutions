@@ -62,7 +62,21 @@ def app():
     useNextSeason = '04/05/2026'
     if today >= useNextSeason:
         #Get pitching stats from Pybaseball/Fangraphs
-        pitch = pyb.pitching_stats(2026, qual=0)
+        try:
+            pitch = pyb.pitching_stats(2026, qual=0)
+        except Exception:
+            st.markdown("""
+                <div style="
+                    padding: 20px;
+                    border-left: 6px solid #cc0000;
+                    border-radius: 6px;
+                    font-size: 1.1rem;
+                    margin-top: 20px;
+                ">
+                    <strong>Pybaseball and Fangraphs are currently unavailable.</strong><br>
+                    Apologies for the inconvenience. Please check back later to see today's pitcher prop opportunities.
+                </div>
+            """, unsafe_allow_html=True)
         st.markdown(f"Currently using 2026 data.")
     else:
         #Get pitching stats from Pybaseball/Fangraphs
