@@ -325,6 +325,6 @@ def app():
 
     #add probability of NRFI and moneyline price (to compare to market value)
     ##second arg: False=no price, True=get price
-    probStarters = getNRFIPrice(probStarters, appendPrice_=True).sort_values(by="NRFIPrice", ascending=False).reset_index(drop=True)
+    probStarters = getNRFIPrice(probStarters, appendPrice_=True)
     st.write("Columns: Teams, Pitchers, Pitcher Runs Give Up Per 1st, Team Runs Scored Per 1st, **Predicted** NRFI Price")
     st.dataframe(probStarters)
