@@ -11,12 +11,6 @@ def app():
 
     #load in data
     df = pd.read_csv(r'data/nrfi.csv')
-
-    progress_bar = st.progress(0)
-    status_text = st.empty()
-    status_text.text("Loading NRFI model...")
-    progress_bar.progress(10)
-
     #keep only the columns we need for the model
     cols = ['home_team', 'away_team', 'inning', 'player_name', 'pitcher', 
             'home_score', 'away_score', 'game_pk']
