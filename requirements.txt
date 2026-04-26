@@ -8,3 +8,4 @@ openpyxl
 numpy
 matplotlib
 regex
+bs4
