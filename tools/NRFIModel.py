@@ -12,6 +12,11 @@ def app():
     #load in data
     df = pd.read_csv(r'data/nrfi.csv')
 
+    progress_bar = st.progress(0)
+    status_text = st.empty()
+    status_text.text("Loading NRFI model...")
+    progress_bar.progress(10)
+
     #keep only the columns we need for the model
     cols = ['home_team', 'away_team', 'inning', 'player_name', 'pitcher', 
             'home_score', 'away_score', 'game_pk']
@@ -320,5 +325,6 @@ def app():
 
     #add probability of NRFI and moneyline price (to compare to market value)
     ##second arg: False=no price, True=get price
-    probStarters = getNRFIPrice(probStarters, appendPrice_=True)
+    probStarters = getNRFIPrice(probStarters, appendPrice_=True).sort_values(by="NRFIPrice", ascending=False).reset_index(drop=True)
+    st.write("Columns: Teams, Pitchers, Pitcher Runs Give Up Per 1st, Team Runs Scored Per 1st, **Predicted** NRFI Price")
     st.dataframe(probStarters)
