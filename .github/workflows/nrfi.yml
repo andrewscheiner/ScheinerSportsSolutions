@@ -1,0 +1,40 @@
+name: NRFI Model
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    - cron: '0 9 * * *'  # This will run the workflow daily at 5:00am Eastern Time (UTC-4/UTC-5 depending on daylight saving)
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+            pip install requests pandas BeautifulSoup pybaseball regex bs4 BeautifulSoup4
+      - name: Execute Python Script
+        run: |
+            python nrfi.py
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m 'NRFI Model Data Update'
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
