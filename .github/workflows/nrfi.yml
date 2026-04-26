@@ -24,7 +24,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-            pip install requests pandas pybaseball regex bs4 
+            pip install requests pandas pybaseball regex beautifulsoup4 bs4 
       - name: Execute Python Script
         run: |
             python nrfi.py
