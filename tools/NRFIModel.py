@@ -337,6 +337,7 @@ def app():
             #append prices to final prediction output
             nrfiTable["EXPECTED NRFI Price"] = nrfiPrice
             nrfiTable["Sort By Price"] = nrfiPriceSort
+            nrfiTable.index.name = "Game #"
             #nrfiTable["YRFIPrice"] = yrfiPrice
             return nrfiTable
         
