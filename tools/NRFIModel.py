@@ -3,6 +3,7 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup as bs
 import regex as re
+import numpy as np
 
 def app():
 
@@ -272,8 +273,9 @@ def app():
 
     #### NRFI price
     def calcPrice(x):
-        if x <= 0:
-            return("YRFI")
+        #if we do not have a value for one of the values (pitcher RAPF or team RSPF), return NaN
+        if pd.isna(x):
+            return np.nan
         #nrfi chance > 0.5
         elif x > 0.5:
             price = int(round(((x/(1-x))*100)*-1,0))
@@ -282,8 +284,30 @@ def app():
         elif x < 0.5 and x > 0:
             price = int(round((((1-x)/x)*100),0))
             return("+"+str(price))
-        else:
+        #even
+        elif x == 0.5:
             return("+100")
+        #if something goes wrong, return NaN
+        else:
+            return np.nan
+    
+    ### NRFI price but sortable for users (removes plus sign)
+    def sortablePrice(x):
+        if pd.isna(x):
+            return np.nan
+        #nrfi chance > 0.5
+        elif x > 0.5:
+            price = int(round(((x/(1-x))*100)*-1,0))
+            return(price)
+        #nrfi chance < 0.5, but not 0
+        #### NO PLUS SIGN FOR SORTING PURPOSES
+        elif x < 0.5 and x > 0:
+            price = int(round((((1-x)/x)*100),0))
+            return(price)
+        elif x == 0.5:
+            return(100)
+        else:
+            return np.nan
         
     def getNRFIPrice(nrfiTable, appendPrice_):
 
@@ -305,14 +329,14 @@ def app():
             nrfiPrice = []
             for x in expectedNRFIProb:
                 nrfiPrice.append(calcPrice(x))
-            #print(nrfiPrice)
-            #add YRFI price to table as well
-            # yrfiPrice = []
-            # for y in expectedNRFIProb:
-            #     yrfiPrice.append(calcPrice(1-y))
+
+            nrfiPriceSort = []
+            for y in expectedNRFIProb:
+                nrfiPriceSort.append(sortablePrice(y))
 
             #append prices to final prediction output
-            nrfiTable["NRFIPrice"] = nrfiPrice
+            nrfiTable["EXPECTED NRFI Price"] = nrfiPrice
+            nrfiTable["Sort By Price"] = nrfiPriceSort
             #nrfiTable["YRFIPrice"] = yrfiPrice
             return nrfiTable
         
@@ -320,5 +344,5 @@ def app():
     #add probability of NRFI and moneyline price (to compare to market value)
     ##second arg: False=no price, True=get price
     probStarters = getNRFIPrice(probStarters, appendPrice_=True)
-    st.write("Columns: Teams, Pitchers, Pitcher Runs Give Up Per 1st, Team Runs Scored Per 1st, **Predicted** NRFI Price")
+    st.write("Columns: Teams, Pitchers, Pitcher Runs Give Up Per 1st, Team Runs Scored Per 1st, **Predicted** NRFI Price, **Sort By Price**")
     st.dataframe(probStarters)
