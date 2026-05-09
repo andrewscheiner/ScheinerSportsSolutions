@@ -11,14 +11,7 @@ def app():
     st.markdown("Analytically predict if a run will score in the first inning of today's baseball games.")
 
     #load in data
-    df = pd.read_csv(r'data/nrfi.csv')
-    #keep only the columns we need for the model
-    cols = ['home_team', 'away_team', 'inning', 'player_name', 'pitcher', 
-            'home_score', 'away_score', 'game_pk']
-
-    # get first inning data with only specific columns
-    df1 = df[df['inning'] == 1]
-    df2 = df1[cols].reset_index(drop=True)
+    df2 = pd.read_csv(r'data/nrfi.csv').reset_index(drop=True)
 
     # get teams
     teams = ['BOS', 'CWS', 'CLE', 'COL', 'LAA', 'MIA', 'MIN', 'PIT', 'SF', 'TB',
@@ -40,7 +33,7 @@ def app():
 
     # Away pitchers
     away = (
-        df1
+        df2
         .groupby(["game_pk", "away_team"])["pitcher"]
         .first()
         .reset_index()
@@ -49,7 +42,7 @@ def app():
 
     # Home pitchers
     home = (
-        df1
+        df2
         .groupby(["game_pk", "home_team"])["pitcher"]
         .last()
         .reset_index()
