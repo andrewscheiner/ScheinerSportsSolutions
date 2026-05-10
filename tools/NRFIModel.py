@@ -547,3 +547,6 @@ def app():
         'Away_Team_RSPF']])
 
     probStarters["SSS_ML_Prediction"] = probStarters["SSS_ML_Prediction"].apply(lambda x: "NRFI" if x == 1 else "YRFI")
+
+    # Print final table with predictions and prices
+    st.dataframe(probStarters)
