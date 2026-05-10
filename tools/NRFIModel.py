@@ -547,13 +547,6 @@ def app():
         'Away_Team_RSPF']])
     probStarters["SSS_ML_Prediction"] = probStarters["SSS_ML_Prediction"].apply(lambda x: "NRFI" if x == 1 else "YRFI")
 
-    #Rounding
-    probStarters['Away_Team_RSPF'] = probStarters['Away_Team_RSPF'].round(2)
-    probStarters['Home_Team_RSPF'] = probStarters['Home_Team_RSPF'].round(2)
-    probStarters['Away_Pitcher_RAPF'] = probStarters['Away_Pitcher_RAPF'].round(2)
-    probStarters['Home_Pitcher_RAPF'] = probStarters['Home_Pitcher_RAPF'].round(2)
-    probStarters['Sort_Price'] = probStarters['Sort_Price'].round(0)
-
     # style table
     def color_rows(row):
         if row["SSS_ML_Prediction"] == "NRFI":
@@ -562,6 +555,6 @@ def app():
             return ["background-color: #003dd6"] * len(row)   # light blue
         return [""] * len(row)
 
-    # Print final table with predictions and prices
-    probStarters2 = probStarters.style.apply(color_rows, axis=1)
+    # Print final table with predictions and prices (force rounding)
+    probStarters2 = probStarters.style.apply(color_rows, axis=1).format("{:.0f}")
     st.dataframe(probStarters2, use_container_width=True)
