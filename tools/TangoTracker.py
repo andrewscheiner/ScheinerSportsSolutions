@@ -15,6 +15,7 @@ def app():
                     border-radius: 6px;
                     font-size: 1.1rem;
                     margin-top: 20px;
+                margin-bottom: 20px;   
                 ">
                     <strong>My resource is currently unavailable because of technical issues.</strong><br>
                     Apologies for the inconvenience. Please use <a href="https://www.fangraphs.com/projections/cy-young" target="_blank">this Fangraphs link</a> to see the latest Tango CY Young Tracker updates.
