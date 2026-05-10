@@ -640,4 +640,4 @@ def app():
                 return ["background-color: #454545"] * len(row)
             return [""] * len(row)
 
-    st.dataframe(probStarters.style.apply(color_rows, axis=1))
+    st.table(probStarters.style.apply(color_rows, axis=1))
