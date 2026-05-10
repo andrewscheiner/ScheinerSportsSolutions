@@ -8,16 +8,7 @@ def app():
     st.title("🔍 Tango Tracker")
     st.markdown("Continually track the MLB CY Young Award Race using Tom Tango's successful formula.")
 
-    ##################################################
-    # Tango CY Young Tracker
-    ##################################################
-    season = int(datetime.now().year)
-    def get_pitching_leaders(lg):
-        #get 2024 pitching stat leaders for given league
-        try:
-            cy_young = pyb.pitching_stats(season,season,league=lg)
-        except Exception:
-            st.markdown("""
+    st.markdown("""
                 <div style="
                     padding: 20px;
                     border-left: 6px solid #cc0000;
@@ -29,19 +20,41 @@ def app():
                     Apologies for the inconvenience. Please use <a href="https://www.fangraphs.com/projections/cy-young" target="_blank">this Fangraphs link</a> to see the latest Tango CY Young Tracker updates.
                 </div>
             """, unsafe_allow_html=True)
-        #calculate tango cy young points
-        cy_young["Tango"] = ((cy_young["IP"]/2) - cy_young["ER"]) + \
-                            (cy_young["SO"]/10) + cy_young["W"]
-        #get top 5 tango pitchers
-        cy_young = cy_young.sort_values('Tango', ascending=False).reset_index(drop=True).head(5)
-        #rank index 1-5
-        cy_young.index = cy_young.index + 1
 
-        #return tango DF
-        return cy_young[["Name", "Tango", "Team", "W", "L", "GS", "IP", "SO", "ERA", "FIP", "WAR",  \
-                        "xERA", "xFIP", "LOB%", "CG", "ShO"]]
-    st.subheader('AL Tango CY Young Tracker')
-    st.dataframe(get_pitching_leaders("AL"))
-    st.subheader('NL Tango CY Young Tracker')
-    st.dataframe(get_pitching_leaders("NL"))
-    ##################################################
+    # ##################################################
+    # # Tango CY Young Tracker
+    # ##################################################
+    # season = int(datetime.now().year)
+    # def get_pitching_leaders(lg):
+    #     #get 2024 pitching stat leaders for given league
+    #     try:
+    #         cy_young = pyb.pitching_stats(season,season,league=lg)
+    #     except Exception:
+    #         st.markdown("""
+    #             <div style="
+    #                 padding: 20px;
+    #                 border-left: 6px solid #cc0000;
+    #                 border-radius: 6px;
+    #                 font-size: 1.1rem;
+    #                 margin-top: 20px;
+    #             ">
+    #                 <strong>My resource is currently unavailable because of technical issues.</strong><br>
+    #                 Apologies for the inconvenience. Please use <a href="https://www.fangraphs.com/projections/cy-young" target="_blank">this Fangraphs link</a> to see the latest Tango CY Young Tracker updates.
+    #             </div>
+    #         """, unsafe_allow_html=True)
+    #     #calculate tango cy young points
+    #     cy_young["Tango"] = ((cy_young["IP"]/2) - cy_young["ER"]) + \
+    #                         (cy_young["SO"]/10) + cy_young["W"]
+    #     #get top 5 tango pitchers
+    #     cy_young = cy_young.sort_values('Tango', ascending=False).reset_index(drop=True).head(5)
+    #     #rank index 1-5
+    #     cy_young.index = cy_young.index + 1
+
+    #     #return tango DF
+    #     return cy_young[["Name", "Tango", "Team", "W", "L", "GS", "IP", "SO", "ERA", "FIP", "WAR",  \
+    #                     "xERA", "xFIP", "LOB%", "CG", "ShO"]]
+    # st.subheader('AL Tango CY Young Tracker')
+    # st.dataframe(get_pitching_leaders("AL"))
+    # st.subheader('NL Tango CY Young Tracker')
+    # st.dataframe(get_pitching_leaders("NL"))
+    # ##################################################
