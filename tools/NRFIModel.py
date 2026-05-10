@@ -550,11 +550,12 @@ def app():
     # style table
     def color_rows(row):
         if row["SSS_ML_Prediction"] == "NRFI":
-            return ["background-color: #c6f6d5"] * len(row)   # light green
+            return ["background-color: #006666"] * len(row)   # green
         elif row["SSS_ML_Prediction"] == "YRFI":
-            return ["background-color: #cce0ff"] * len(row)   # light blue
+            return ["background-color: #003dd6"] * len(row)   # light blue
         return [""] * len(row)
 
     # Print final table with predictions and prices
     probStarters2 = probStarters.style.apply(color_rows, axis=1)
+    probStarters2 = probStarters2.round(0).astype("Int64")
     st.dataframe(probStarters2, use_container_width=True)
