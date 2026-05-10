@@ -557,5 +557,5 @@ def app():
 
     # Print final table with predictions and prices
     probStarters2 = probStarters.style.apply(color_rows, axis=1)
-    probStarters2 = probStarters2.round(0).astype("Int64")
+    #probStarters2 = probStarters2.round(0).astype("Int64")
     st.dataframe(probStarters2, use_container_width=True)
