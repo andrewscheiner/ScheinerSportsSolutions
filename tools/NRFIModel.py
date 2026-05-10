@@ -13,6 +13,8 @@ def app():
 
     st.title("💸 No Runs In The First Inning (NRFI) Model")
     st.markdown("Analytically predict if a run will score in the first inning of today's baseball games.")
+    st.markdown("Explanation of the table and model below!")
+
 
     #load in data
     df2 = pd.read_csv(r'data/nrfi.csv').reset_index(drop=True)
@@ -569,3 +571,15 @@ def app():
             return [""] * len(row)
 
     st.dataframe(probStarters.style.apply(color_rows, axis=1))
+
+    # table interpretation
+    st.markdown("**How to interpret the NRFI table:**")
+    st.markdown("NRFI = No runs scored in the first inning, YRFI = 1+ runs scored in the first inning.")
+    st.markdown("Pitcher RAPF = Runs a pitcher allows per first inning.")
+    st.markdown("Team RSPF = Runs a team scores per first inning.")
+    st.markdown("NRFI Price = The **expected** betting price for a NRFI. Negative price means NRFI is expected, positive price means YRFI is expected.")
+    st.markdown("SSS ML Prediction = The prediction of a machine learning model for NRFI vs YRFI.")
+    st.markdown("**SSS Decision**")
+    st.markdown("NRFI: Expected price is NRFI favored + Model predicts NRFI")
+    st.markdown("YRFI: Expected price is YRFI favored + Model predicts YRFI")
+    st.markdown("No Bet: Expected price and model prediction do not align.")
