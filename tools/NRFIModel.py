@@ -545,8 +545,16 @@ def app():
         'Away_Pitcher_RAPF',
         'Home_Team_RSPF',
         'Away_Team_RSPF']])
-
     probStarters["SSS_ML_Prediction"] = probStarters["SSS_ML_Prediction"].apply(lambda x: "NRFI" if x == 1 else "YRFI")
 
+    # style table
+    def color_rows(row):
+        if row["SSS_ML_Prediction"] == "NRFI":
+            return ["background-color: #c6f6d5"] * len(row)   # light green
+        elif row["SSS_ML_Prediction"] == "YRFI":
+            return ["background-color: #cce0ff"] * len(row)   # light blue
+        return [""] * len(row)
+
     # Print final table with predictions and prices
-    st.dataframe(probStarters)
+    probStarters2 = probStarters.style.apply(color_rows, axis=1)
+    st.dataframe(probStarters2, use_container_width=True)
