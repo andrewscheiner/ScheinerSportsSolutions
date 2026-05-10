@@ -25,8 +25,8 @@ def app():
                     font-size: 1.1rem;
                     margin-top: 20px;
                 ">
-                    <strong>Pybaseball and Fangraphs are currently unavailable.</strong><br>
-                    Apologies for the inconvenience. Please check back later to see the latest Tango CY Young Tracker updates.
+                    <strong>My resource is currently unavailable because of technical issues.</strong><br>
+                    Apologies for the inconvenience. <a href="https://www.fangraphs.com/leaders/tango-cy-young-tracker" target="_blank">Please use this Fangraphs link to see the latest Tango CY Young Tracker updates.</a>
                 </div>
             """, unsafe_allow_html=True)
         #calculate tango cy young points

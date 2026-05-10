@@ -40,16 +40,14 @@ if "page" not in st.session_state:
 # Betting Systems Section (3x1)
 # -------------------------------
 st.header("Betting Systems")
-cols = st.columns(5)
+cols = st.columns(4)
 if cols[0].button("💸 NRFI Report"):
     st.session_state.page = "nrfi"
 if cols[1].button("🏀 NBA Daily Insights"):
     st.session_state.page = "nba_daily"
 if cols[2].button("🏀 Betting Systems"):
     st.session_state.page = "betting_systems"
-if cols[3].button("⚾ Pitcher Props"):
-    st.session_state.page = "pitcher"
-if cols[4].button("🪜 Laddering Tool"):
+if cols[3].button("🪜 Laddering Tool"):
     st.session_state.page = "ladder"
 
 
@@ -58,7 +56,7 @@ if cols[4].button("🪜 Laddering Tool"):
 # Seasonal Tools Section (1x4)
 # -------------------------------
 st.header("Seasonal Tools")
-cols2 = st.columns(5)
+cols2 = st.columns(4)
 if cols2[0].button("🔍 Tango Tracker"):
     st.session_state.page = "tango"
 if cols2[1].button("🏈 NFL Power Rankings"):
