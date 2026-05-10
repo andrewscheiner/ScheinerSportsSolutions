@@ -557,5 +557,9 @@ def app():
 
     # Print final table with predictions and prices
     probStarters2 = probStarters.style.apply(color_rows, axis=1)
-    #probStarters2 = probStarters2.round(0).astype("Int64")
+    probStarters2['Away_Team_RSPF'] = probStarters2['Away_Team_RSPF'].round(2)
+    probStarters2['Home_Team_RSPF'] = probStarters2['Home_Team_RSPF'].round(2)
+    probStarters2['Away_Pitcher_RAPF'] = probStarters2['Away_Pitcher_RAPF'].round(2)
+    probStarters2['Home_Pitcher_RAPF'] = probStarters2['Home_Pitcher_RAPF'].round(2)
+    probStarters2['Sort_Price'] = probStarters2['Sort_Price'].round(0)
     st.dataframe(probStarters2, use_container_width=True)
