@@ -26,7 +26,7 @@ def app():
                     margin-top: 20px;
                 ">
                     <strong>My resource is currently unavailable because of technical issues.</strong><br>
-                    Apologies for the inconvenience. <a href="https://www.fangraphs.com/leaders/tango-cy-young-tracker" target="_blank">Please use this Fangraphs link to see the latest Tango CY Young Tracker updates.</a>
+                    Apologies for the inconvenience. Please use <a href="https://www.fangraphs.com/projections/cy-young" target="_blank">this Fangraphs link</a> to see the latest Tango CY Young Tracker updates.
                 </div>
             """, unsafe_allow_html=True)
         #calculate tango cy young points
