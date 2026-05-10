@@ -546,6 +546,17 @@ def app():
         'Home_Team_RSPF',
         'Away_Team_RSPF']])
     probStarters["SSS_ML_Prediction"] = probStarters["SSS_ML_Prediction"].apply(lambda x: "NRFI" if x == 1 else "YRFI")
+    
+    #Make a decision based off price and ML
+    decisionmatrix = []
+    for i in range(probStarters.shape[0]):
+        if probStarters.iloc[i,-1] == "NRFI" and probStarters.iloc[i,-2] < 0:
+            decisionmatrix.append("NRFI")
+        elif probStarters.iloc[i,-1] == "YRFI" and probStarters.iloc[i,-2] > 0:
+            decisionmatrix.append("YRFI")
+        else:
+            decisionmatrix.append("No Bet")
+    probStarters["SSS_Decision"] = decisionmatrix
 
     # style table
     def color_rows(row):
@@ -555,6 +566,6 @@ def app():
             return ["background-color: #003dd6"] * len(row)   # light blue
         return [""] * len(row)
 
-    # Print final table with predictions and prices (force rounding)
-    probStarters2 = probStarters.style.apply(color_rows, axis=1).format("{:.0f}")
+    # Print final table with predictions and prices
+    probStarters2 = probStarters.style.apply(color_rows, axis=1)
     st.dataframe(probStarters2, use_container_width=True)
