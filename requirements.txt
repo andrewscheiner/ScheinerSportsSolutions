@@ -10,3 +10,6 @@ matplotlib
 regex
 bs4
 sklearn
+sklearn.model_selection
+sklearn.tree
+sklearn.metrics
