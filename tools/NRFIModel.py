@@ -11,6 +11,78 @@ import sklearn.metrics as metrics
 
 def app():
 
+    st.markdown("""
+    <style>
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        background-color: #ffffff;
+        overflow: hidden;
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* Center ALL text */
+    table td, table th {
+        text-align: center !important;
+        vertical-align: middle !important;
+    }
+
+    /* Add border to EVERY cell */
+    table td, table th {
+        border: 1px solid #000000 !important;
+    }
+
+    /* Header */
+    thead th {
+        background-color: #006666 !important;
+        color: #CAEBEB !important;
+        font-size: 16px;
+        font-weight: 900;
+        padding: 14px 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid #004f4f !important;
+    }
+
+    /* Body cells */
+    tbody td {
+        padding: 12px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #1a1c1e;
+    }
+
+    /* Hover effect */
+    tbody tr:hover {
+        background-color: #e8f5f5;
+    }
+
+    /* INDEX COLUMN — Streamlit uses .row_heading */
+    table th.row_heading, table td.row_heading {
+        color: #006666 !important;
+        font-weight: bold !important;
+        background-color: #f0fafa !important;
+    }
+
+    /* Top-left blank corner cell */
+    table th.blank {
+        background-color: #006666 !important;
+        color: #f0fafa    !important;
+    }
+
+    /* Make table scrollable on mobile */
+    @media (max-width: 576px) {
+        table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+    }
+
+    </style>
+    """ , unsafe_allow_html=True)
+
     st.title("💸 No Runs In The First Inning (NRFI) Model")
     st.markdown("Analytically predict if a run will score in the first inning of today's baseball games.")
 
