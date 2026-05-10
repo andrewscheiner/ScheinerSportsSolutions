@@ -558,56 +558,8 @@ def app():
             decisionmatrix.append("No Bet")
     probStarters["SSS_Decision"] = decisionmatrix
 
-    #### ALLOW USER TO SEE COLUMNS THEY WANT
-    X_COLUMNS = ["HomeTeam", "AwayTeam", "HomePitcher", "AwayPitcher"]
-    COLUMNS = {
-        "Show Stats": ['Home_Pitcher_RAPF', 'Away_Pitcher_RAPF', 'Home_Team_RSPF', 'Away_Team_RSPF'],
-        "Show Actual Price": ["NRFIPrice"],
-        "Show Sort Price": ["Sort_Price"],
-        "Show Machine Learning": ["SSS_ML_Prediction"],
-        "Show Decision": ["SSS_Decision"],
-        "Show All": "ALL"
-    }
-
-    col1, col2, col3, col4, col5, col6 = st.columns(6)
-
-    with col1:
-        stats_btn = st.button("Show Stats")
-    with col2:
-        actual_btn = st.button("Show Actual Price")
-    with col3:
-        sort_btn = st.button("Show Sort Price")
-    with col4:
-        ml_btn = st.button("Show Machine Learning")
-    with col5:
-        decision_btn = st.button("Show Decision")
-    with col6:
-        all_btn = st.button("Show All")
-
-    selected = "Show All"
-    if stats_btn:
-        selected = "Show Stats"
-    elif actual_btn:
-        selected = "Show Actual Price"
-    elif sort_btn:
-        selected = "Show Sort Price"
-    elif ml_btn:
-        selected = "Show Machine Learning"
-    elif decision_btn:
-        selected = "Show Decision"
-    elif all_btn:
-        selected = "Show All"
-
-    if selected:
-        if COLUMNS[selected] == "ALL":
-            df_view = probStarters.copy()
-        else:
-            cols = df_view = probStarters[X_COLUMNS + COLUMNS[selected]]
-            df_view = probStarters[cols]
-
-        df_view = df_view.round(0)
-
-        def color_rows(row):
+    # Style Table
+    def color_rows(row):
             if row["SSS_Decision"] == "NRFI":
                 return ["background-color: #006666"] * len(row)
             elif row["SSS_Decision"] == "YRFI":
@@ -616,9 +568,4 @@ def app():
                 return ["background-color: #454545"] * len(row)
             return [""] * len(row)
 
-        styled = (
-            df_view.style
-                .apply(color_rows, axis=1)
-        )
-
-        st.dataframe(styled, use_container_width=True)
+    st.dataframe(probStarters.style.apply(color_rows, axis=1))
