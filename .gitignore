@@ -6,3 +6,10 @@ tools/__pycache__/
 **/__pycache__/
 **/__pycache__/**
 **/__pycache__/.cpython-*-*.pyc
+.env
+.env.*
+*.env
+credentials.json
+*.pem
+*.key
+.credentials

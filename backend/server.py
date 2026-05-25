@@ -30,6 +30,11 @@ STRIPE_API_KEY = os.environ["STRIPE_API_KEY"]
 MONTHLY_PRICE_USD = float(os.environ.get("MONTHLY_PRICE_USD", "1.99"))
 LIFETIME_PRICE_USD = float(os.environ.get("LIFETIME_PRICE_USD", "20.00"))
 SUBSCRIPTION_NAME = os.environ.get("SUBSCRIPTION_NAME", "Pro")
+ADMIN_EMAILS = {
+    e.strip().lower()
+    for e in os.environ.get("ADMIN_EMAILS", "").split(",")
+    if e.strip()
+}
 
 PLAN_PRICES = {
     "monthly": MONTHLY_PRICE_USD,
@@ -105,6 +110,9 @@ async def get_current_user(authorization: Optional[str] = Header(default=None)) 
 
 
 async def _user_to_out(user: dict) -> UserOut:
+    email_lower = (user.get("email") or "").lower()
+    is_admin = email_lower in ADMIN_EMAILS
+
     sub = await db.subscriptions.find_one({"user_id": user["user_id"]}, {"_id": 0})
     is_active = False
     status = "inactive"
@@ -125,6 +133,12 @@ async def _user_to_out(user: dict) -> UserOut:
                     is_active = period_end >= datetime.now(timezone.utc)
                 else:
                     is_active = True
+
+    if is_admin:
+        is_active = True
+        status = "active"
+        plan_type = "admin"
+
     out = UserOut(
         user_id=user["user_id"],
         email=user["email"],
