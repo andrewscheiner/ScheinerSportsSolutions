@@ -1,27 +1,39 @@
+"""Scheiner Sports Solutions — Streamlit entry point.
+
+Auth-gated, subscription-locked sports analytics dashboard.
+"""
+import os
 import streamlit as st
 
-st.set_page_config(
-    page_title="Andrew Scheiner's Sports Dashboard",
-    page_icon=":trophy:",
-    layout="wide",
-    initial_sidebar_state="expanded")
+# Make the project root importable for `tools.*` modules
+import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-st.set_page_config(page_title="Andrew Scheiner's Sports Dashboard", page_icon=":trophy:", layout="wide")
-
-#st.title('Scheiner Sports Solutions')
-st.markdown(
-    """
-    <img src="https://raw.githubusercontent.com/andrewscheiner/ScheinerSportsSolutions/refs/heads/main/logos/logo-light.png" style="height:60px;">
-    """,
-    unsafe_allow_html=True
+from auth_gate import (
+    ensure_authenticated,
+    ensure_subscribed,
+    render_account_sidebar,
+    _inject_global_css,
 )
 
-st.markdown('Sports betting, fantasy sports, and game tools designed by Andrew Scheiner.')
+st.set_page_config(
+    page_title="Scheiner Sports Solutions",
+    page_icon="🏆",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
 
-##########################
-#### Revamp home page ####
-##########################
-# Import each page as a module
+# 1. Auth gate
+user = ensure_authenticated()
+
+# 2. Subscription gate
+ensure_subscribed(user)
+
+# 3. Authenticated + Subscribed → render dashboard
+_inject_global_css()
+render_account_sidebar(user)
+
+# Lazy imports for tool modules
 import tools.BettingSystems as betting_systems
 import tools.NFLPowerRankings as nfl
 import tools.PitcherProps as pitcher
@@ -32,60 +44,91 @@ import tools.ReverseRunYourPool as reverse_pool
 import tools.NBADaily as nba_daily
 import tools.NRFIModel as nrfi
 
-# Initialize session state
+# ----- Header -----
+st.markdown(
+    """
+    <div class="sss-hero" data-testid="dashboard-hero">
+      <span class="sss-pill">Pro Dashboard</span>
+      <h1>Scheiner <span>Sports Solutions</span></h1>
+      <p>Sports betting, fantasy sports, and game-theory tools — designed by Andrew Scheiner. Choose a tool below.</p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Persistent page state
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
-# -------------------------------
-# Betting Systems Section (3x1)
-# -------------------------------
-st.header("Betting Systems")
+
+def _nav(label, key, page_id, testid, icon):
+    if st.button(f"{icon}  {label}", key=key, use_container_width=True):
+        st.session_state.page = page_id
+        st.rerun()
+
+
+# ----- Tool grid -----
+st.markdown(
+    "<h2 style='color:#D4AF37;text-transform:uppercase;letter-spacing:0.06em;font-size:1.1rem;margin-top:1.5rem;'>Betting Systems</h2>",
+    unsafe_allow_html=True,
+)
 cols = st.columns(4)
-if cols[0].button("💸 NRFI Report"):
-    st.session_state.page = "nrfi"
-if cols[1].button("🏀 NBA Daily Insights"):
-    st.session_state.page = "nba_daily"
-if cols[2].button("🏀 Betting Systems"):
-    st.session_state.page = "betting_systems"
-if cols[3].button("🪜 Laddering Tool"):
-    st.session_state.page = "ladder"
+with cols[0]:
+    _nav("NRFI Report", "nav_nrfi", "nrfi", "tool-nrfi-btn", "💸")
+with cols[1]:
+    _nav("NBA Daily Insights", "nav_nba_daily", "nba_daily", "tool-nba-daily-btn", "🏀")
+with cols[2]:
+    _nav("NBA Betting Systems", "nav_betting", "betting_systems", "tool-betting-btn", "🏀")
+with cols[3]:
+    _nav("Laddering Tool", "nav_ladder", "ladder", "tool-ladder-btn", "🪜")
 
-
-
-# -------------------------------
-# Seasonal Tools Section (1x4)
-# -------------------------------
-st.header("Seasonal Tools")
+st.markdown(
+    "<h2 style='color:#D4AF37;text-transform:uppercase;letter-spacing:0.06em;font-size:1.1rem;margin-top:1.5rem;'>Seasonal Tools</h2>",
+    unsafe_allow_html=True,
+)
 cols2 = st.columns(4)
-if cols2[0].button("🔍 Tango Tracker"):
-    st.session_state.page = "tango"
-if cols2[1].button("🏈 NFL Power Rankings"):
-    st.session_state.page = "nfl"
-if cols2[2].button("🧊 Slump Detector"):
-    st.session_state.page = "slump"
-if cols2[3].button("🔄 MLB Runs Given Up / Reverse Run Your Pool"):
-    st.session_state.page = "reverse_pool"
+with cols2[0]:
+    _nav("Tango Tracker", "nav_tango", "tango", "tool-tango-btn", "🔍")
+with cols2[1]:
+    _nav("NFL Power Rankings", "nav_nfl", "nfl", "tool-nfl-btn", "🏈")
+with cols2[2]:
+    _nav("Slump Detector", "nav_slump", "slump", "tool-slump-btn", "🧊")
+with cols2[3]:
+    _nav("MLB Reverse RYP", "nav_rryp", "reverse_pool", "tool-rryp-btn", "🔄")
 
-# Render selected page
-if st.session_state.page == "betting_systems":
-    betting_systems.app()
-if st.session_state.page == "nba_daily":
-    nba_daily.app()
-elif st.session_state.page == "nfl":
-    nfl.app()
-elif st.session_state.page == "pitcher":
-    pitcher.app()
-elif st.session_state.page == "tango":
-    tango.app()
-elif st.session_state.page == "ladder":
-    ladder.app()
-elif st.session_state.page == "slump":
-    slump.app()
-elif st.session_state.page == "reverse_pool":
-    reverse_pool.app()
-elif st.session_state.page == "nrfi":
-    nrfi.app()
-        
-st.write("Data sources and packages: ESPN, Fangraphs, pybaseball, nfl-data-py, MLB Stats API, Kaggle")
-st.write("Disclaimer: I will not be displaying any lines **posted by sportsbooks**, and all predictions generated by my models are only recommendations. Please bet responsibly and only risk what you are willing to lose.")
-st.write("© Andrew Scheiner 2026")
+# ----- Page renderer -----
+PAGES = {
+    "betting_systems": betting_systems.app,
+    "nba_daily": nba_daily.app,
+    "nfl": nfl.app,
+    "pitcher": pitcher.app,
+    "tango": tango.app,
+    "ladder": ladder.app,
+    "slump": slump.app,
+    "reverse_pool": reverse_pool.app,
+    "nrfi": nrfi.app,
+}
+
+page = st.session_state.get("page", "home")
+if page != "home" and page in PAGES:
+    st.markdown("---")
+    if st.button("← Back to dashboard", key="back_home_btn"):
+        st.session_state.page = "home"
+        st.rerun()
+    try:
+        PAGES[page]()
+    except Exception as e:
+        st.error(f"Sorry, this tool failed to load: {e}")
+
+# ----- Footer -----
+st.markdown("---")
+st.markdown(
+    """
+    <div style="color:#788478;font-size:0.85rem;line-height:1.6;">
+      <p><strong>Data sources &amp; packages:</strong> ESPN, Fangraphs, pybaseball, nfl-data-py, MLB Stats API, Kaggle.</p>
+      <p><strong>Disclaimer:</strong> I will not be displaying any lines <strong>posted by sportsbooks</strong>, and all predictions generated by my models are only recommendations. Please bet responsibly and only risk what you are willing to lose.</p>
+      <p>© Andrew Scheiner 2026</p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
