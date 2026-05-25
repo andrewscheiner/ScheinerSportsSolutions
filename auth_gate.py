@@ -601,7 +601,9 @@ def render_account_sidebar(user: dict):
     token = get_current_token()
     is_sub = user.get("is_subscribed")
     plan_type = (user.get("plan_type") or "").lower()
-    if is_sub and plan_type == "lifetime":
+    if is_sub and plan_type == "admin":
+        badge_text = "ADMIN · FULL ACCESS"
+    elif is_sub and plan_type == "lifetime":
         badge_text = "PRO · LIFETIME"
     elif is_sub:
         badge_text = "PRO · ACTIVE"
