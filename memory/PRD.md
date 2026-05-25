@@ -18,13 +18,16 @@
 - Stripe: emergentintegrations `StripeCheckout` (custom amount $9.99 USD). Webhook at `/api/webhook/stripe`. Idempotent activation extends `subscriptions.current_period_end` by 30 days.
 
 ## Implemented (2026-01-25)
-- ✅ FastAPI backend (`/app/backend/server.py`): `/api/health`, `/api/auth/session`, `/api/auth/me`, `/api/auth/logout`, `/api/subscription/plan`, `/api/subscription/checkout`, `/api/subscription/status/{id}`, `/api/webhook/stripe`.
-- ✅ Streamlit `auth_gate.py`: login screen, paywall, Stripe-return polling, account sidebar, `ensure_authenticated()` + `ensure_subscribed()` gates.
-- ✅ Updated `/app/sports-dashboard.py` to apply gates + new dark-green/gold theme + tool grid (8 tools).
-- ✅ `/app/.streamlit/config.toml` with brand colors.
-- ✅ Auth & subscription tested end-to-end (13/13 backend tests passed; Streamlit login/paywall/dashboard/NRFI navigation verified).
-- ✅ Auth testing playbook at `/app/auth_testing.md`; test credentials in `/app/memory/test_credentials.md`.
-- ✅ All eight original tools (NRFI, NBA Daily, NBA Betting Systems, Laddering, Tango Tracker, NFL Power Rankings, Slump Detector, Reverse RYP) intact and reachable.
+- ✅ FastAPI backend (`/app/backend/server.py`): `/api/health`, `/api/auth/session`, `/api/auth/me` (now returns `plan_type`), `/api/auth/logout`, `/api/subscription/plan` (returns BOTH plans), `/api/subscription/checkout` (accepts `plan_type` = `monthly` | `lifetime`), `/api/subscription/status/{id}`, `/api/webhook/stripe`.
+- ✅ Streamlit `auth_gate.py`: login screen, paywall (NEW: dual-plan pricing cards + tool-specific hero), Stripe-return polling, account sidebar (NEW: shows `PRO · LIFETIME` for lifetime users), `ensure_authenticated()` + `handle_stripe_return_if_needed()` + `require_subscription()` (per-tool gate, NOT app-wide).
+- ✅ Updated `/app/sports-dashboard.py` — per-tool gating (`pro: True/False` on each tool); free tools render unchanged, paywalled tools render `require_subscription()` inside the tool page.
+- ✅ Updated `.env`: `MONTHLY_PRICE_USD=1.99`, `LIFETIME_PRICE_USD=20.00`.
+- ✅ Two pricing plans verified: $1.99/month and $20 one-time-lifetime (lifetime stored as `current_period_end=null` so it never expires).
+- ✅ Per-tool gating verified: 5 free tools (NBA Betting Systems, Laddering, Tango Tracker, NFL Power Rankings, MLB Reverse RYP) are reachable by all signed-in users; 3 Pro tools (NRFI Report, NBA Daily Insights, Slump Detector) show a tool-specific paywall to non-subscribers.
+- ✅ 17/17 backend tests passed; Streamlit flows tested for non-sub / monthly / lifetime users.
+- ✅ Auth & subscription tested end-to-end.
+- ✅ Auth testing playbook at `/app/auth_testing.md`; test credentials in `/app/memory/test_credentials.md` (3 seeded users).
+- ✅ All eight original tools intact and reachable.
 
 ## Backlog (P1)
 - Use a real Stripe recurring subscription (with a Stripe `price_id`) instead of monthly one-off charges that we extend by +30d.
