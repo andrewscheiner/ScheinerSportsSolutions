@@ -57,12 +57,12 @@ def exchange_session_id(session_id: str) -> Optional[dict]:
     return None
 
 
-def create_stripe_checkout(token: str, origin_url: str) -> Optional[dict]:
+def create_stripe_checkout(token: str, origin_url: str, plan_type: str = "monthly") -> Optional[dict]:
     try:
         r = requests.post(
             f"{API_BASE}/subscription/checkout",
             headers=_auth_headers(token),
-            json={"origin_url": origin_url},
+            json={"origin_url": origin_url, "plan_type": plan_type},
             timeout=15,
         )
         if r.status_code == 200:
@@ -226,29 +226,30 @@ def ensure_authenticated() -> Optional[dict]:
 
 
 # ---------------------------------------------------------------------------
-# Public: ensure_subscribed(user)
+# Public: handle_stripe_return_if_needed() — always invoke after auth
 # ---------------------------------------------------------------------------
-def ensure_subscribed(user: dict):
-    """
-    If the user is not subscribed, render the paywall and stop the script.
-    Also handles return-from-Stripe (?stripe_session_id=...).
-    """
+def handle_stripe_return_if_needed():
+    """If the URL has ?stripe_session_id=..., poll until paid then refresh."""
     token = get_current_token()
-
-    # Handle return-from-stripe inline
+    if not token:
+        return
     params = get_query_params()
     stripe_sid = params.get("stripe_session_id")
     if isinstance(stripe_sid, list):
         stripe_sid = stripe_sid[0] if stripe_sid else None
-
-    if stripe_sid and token:
+    if stripe_sid:
         _handle_stripe_return(token, stripe_sid)
-        return  # _handle_stripe_return will rerun via st.rerun()
 
+
+# ---------------------------------------------------------------------------
+# Public: require_subscription(user) — call from a paywalled tool page
+# ---------------------------------------------------------------------------
+def require_subscription(user: dict, tool_label: str = "this tool"):
+    """If the user is not subscribed, render the paywall and stop the script."""
     if user.get("is_subscribed"):
         return
-
-    _render_paywall(user, token)
+    token = get_current_token()
+    _render_paywall(user, token, locked_tool=tool_label)
     st.stop()
 
 
@@ -403,73 +404,125 @@ def _render_login_screen():
     )
 
 
-def _render_paywall(user: dict, token: str):
+def _render_paywall(user: dict, token: str, locked_tool: Optional[str] = None):
     _inject_global_css()
     plan = fetch_plan() or {
         "name": "Pro",
-        "price_usd": 9.99,
-        "interval": "month",
+        "plans": [
+            {"id": "monthly", "label": "Monthly", "price_usd": 1.99, "interval": "month", "tagline": "Cancel anytime"},
+            {"id": "lifetime", "label": "Lifetime", "price_usd": 20.00, "interval": "one-time", "tagline": "Pay once · never billed again"},
+        ],
         "features": [],
     }
+
+    pill_text = "Unlock Pro Tool" if locked_tool else "Step 2 of 2 · Subscribe"
+    hero_title_suffix = (
+        f"Unlock <span>{locked_tool}</span>"
+        if locked_tool
+        else f"Welcome, <span>{(user.get('name','').split(' ')[0]) or 'Bettor'}</span>"
+    )
+    hero_subtitle = (
+        "Pick a plan below to unlock this tool and every other Pro feature. Cancel anytime on the monthly plan."
+        if locked_tool
+        else "Upgrade to unlock the NRFI model, NBA Daily Insights, and Slump Detector. Free tools stay free."
+    )
 
     st.markdown(
         f"""
         <div class="sss-hero" data-testid="paywall-hero">
-          <span class="sss-pill">Step 2 of 2 · Subscribe</span>
-          <h1>Welcome, <span>{user.get('name','').split(' ')[0] or 'Bettor'}</span></h1>
-          <p>One subscription unlocks every betting system, prop model, and seasonal tool. Cancel anytime from your dashboard.</p>
+          <span class="sss-pill">{pill_text}</span>
+          <h1>{hero_title_suffix}</h1>
+          <p>{hero_subtitle}</p>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    col1, col2 = st.columns([1.2, 1])
-    with col1:
-        features_html = "".join(
-            f'<div class="sss-feature">{f}</div>' for f in plan.get("features", [])
-        )
-        st.markdown(
-            f"""
-            <div class="sss-card" data-testid="paywall-features-card">
-              <h3>What's included</h3>
-              {features_html}
-              <div class="sss-feature">Daily refreshed models (GitHub Actions overnight)</div>
-              <div class="sss-feature">No ads · No sportsbook lines · No upsells</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-    with col2:
-        st.markdown(
-            f"""
-            <div class="sss-card" data-testid="paywall-pricing-card">
-              <h3>{plan.get('name','Pro')}</h3>
-              <div class="sss-price">${plan.get('price_usd', 9.99):.2f}<small>/{plan.get('interval','month')}</small></div>
-              <p style="color:#9ca99e;margin-top:0.5rem;">Billed monthly. Secure checkout via Stripe.</p>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        if st.button("Subscribe with Stripe", key="subscribe_btn", use_container_width=True):
-            origin = get_origin_url()
-            data = create_stripe_checkout(token, origin)
-            if data and data.get("url"):
-                # Navigate the parent window to Stripe Checkout
-                components.html(
-                    f"""
-                    <script>
-                      window.parent.location.href = "{data['url']}";
-                    </script>
-                    """,
-                    height=0,
-                )
-                st.info("Redirecting to Stripe…")
-                st.stop()
-            else:
-                st.error("Could not start checkout. Please try again.")
+    # Features card (full width)
+    features_html = "".join(
+        f'<div class="sss-feature">{f}</div>' for f in plan.get("features", [])
+    )
+    st.markdown(
+        f"""
+        <div class="sss-card" data-testid="paywall-features-card" style="margin-bottom:1rem;">
+          <h3>What you unlock</h3>
+          {features_html}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
+    # Two pricing cards
+    plans = plan.get("plans", [])
+    monthly_plan = next((p for p in plans if p["id"] == "monthly"), None)
+    lifetime_plan = next((p for p in plans if p["id"] == "lifetime"), None)
+
+    col1, col2 = st.columns(2)
+
+    if monthly_plan:
+        with col1:
+            st.markdown(
+                f"""
+                <div class="sss-card" data-testid="paywall-monthly-card">
+                  <h3>Monthly</h3>
+                  <div class="sss-price">${monthly_plan['price_usd']:.2f}<small>/month</small></div>
+                  <p style="color:#9ca99e;margin-top:0.5rem;">{monthly_plan.get('tagline','Cancel anytime')}.<br>Secure checkout via Stripe.</p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            if st.button(
+                f"Subscribe — ${monthly_plan['price_usd']:.2f}/mo",
+                key="subscribe_monthly_btn",
+                use_container_width=True,
+            ):
+                _start_checkout(token, "monthly")
+
+    if lifetime_plan:
+        with col2:
+            st.markdown(
+                f"""
+                <div class="sss-card" data-testid="paywall-lifetime-card" style="border-color:#D4AF37;box-shadow:0 0 0 1px rgba(212,175,55,0.25);">
+                  <h3>Lifetime <span style="background:#D4AF37;color:#0A0F0C;padding:2px 8px;border-radius:999px;font-size:0.7rem;margin-left:6px;">BEST VALUE</span></h3>
+                  <div class="sss-price">${lifetime_plan['price_usd']:.2f}<small>/one-time</small></div>
+                  <p style="color:#9ca99e;margin-top:0.5rem;">{lifetime_plan.get('tagline','Pay once · never billed again')}.<br>Secure checkout via Stripe.</p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            if st.button(
+                f"Buy Lifetime — ${lifetime_plan['price_usd']:.2f}",
+                key="subscribe_lifetime_btn",
+                use_container_width=True,
+            ):
+                _start_checkout(token, "lifetime")
+
+    st.markdown("<div style='height:14px;'></div>", unsafe_allow_html=True)
+    if locked_tool:
+        if st.button("← Back to dashboard", key="paywall_back_btn"):
+            st.session_state.page = "home"
+            st.rerun()
+    else:
         if st.button("Sign out", key="logout_paywall_btn"):
             _do_logout(token)
+
+
+def _start_checkout(token: str, plan_type: str):
+    origin = get_origin_url()
+    data = create_stripe_checkout(token, origin, plan_type=plan_type)
+    if data and data.get("url"):
+        components.html(
+            f"""
+            <script>
+              window.parent.location.href = "{data['url']}";
+            </script>
+            """,
+            height=0,
+        )
+        st.info("Redirecting to Stripe…")
+        st.stop()
+    else:
+        st.error("Could not start checkout. Please try again.")
 
 
 def _handle_stripe_return(token: str, stripe_session_id: str):
@@ -546,6 +599,14 @@ def _do_logout(token: Optional[str]):
 # ---------------------------------------------------------------------------
 def render_account_sidebar(user: dict):
     token = get_current_token()
+    is_sub = user.get("is_subscribed")
+    plan_type = (user.get("plan_type") or "").lower()
+    if is_sub and plan_type == "lifetime":
+        badge_text = "PRO · LIFETIME"
+    elif is_sub:
+        badge_text = "PRO · ACTIVE"
+    else:
+        badge_text = "FREE"
     with st.sidebar:
         st.markdown(
             f"""
@@ -558,11 +619,15 @@ def render_account_sidebar(user: dict):
                 </div>
               </div>
               <div style="margin-top:8px;font-size:0.78rem;color:#D4AF37;font-weight:600;">
-                {'PRO · ACTIVE' if user.get('is_subscribed') else 'FREE'}
+                {badge_text}
               </div>
             </div>
             """,
             unsafe_allow_html=True,
         )
+        if not is_sub:
+            if st.button("⭐ Upgrade to Pro", key="sidebar_upgrade_btn", use_container_width=True):
+                st.session_state.page = "upgrade"
+                st.rerun()
         if st.button("Sign out", key="sidebar_logout_btn", use_container_width=True):
             _do_logout(token)

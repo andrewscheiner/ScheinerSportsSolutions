@@ -27,8 +27,14 @@ load_dotenv()
 MONGO_URL = os.environ["MONGO_URL"]
 DB_NAME = os.environ["DB_NAME"]
 STRIPE_API_KEY = os.environ["STRIPE_API_KEY"]
-SUBSCRIPTION_PRICE_USD = float(os.environ.get("SUBSCRIPTION_PRICE_USD", "9.99"))
+MONTHLY_PRICE_USD = float(os.environ.get("MONTHLY_PRICE_USD", "1.99"))
+LIFETIME_PRICE_USD = float(os.environ.get("LIFETIME_PRICE_USD", "20.00"))
 SUBSCRIPTION_NAME = os.environ.get("SUBSCRIPTION_NAME", "Pro")
+
+PLAN_PRICES = {
+    "monthly": MONTHLY_PRICE_USD,
+    "lifetime": LIFETIME_PRICE_USD,
+}
 
 EMERGENT_AUTH_DATA_URL = "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data"
 
@@ -63,10 +69,12 @@ class UserOut(BaseModel):
     picture: Optional[str] = None
     is_subscribed: bool = False
     subscription_status: str = "inactive"  # active | inactive | cancelled
+    plan_type: Optional[str] = None  # "monthly" | "lifetime" | None
 
 
 class CheckoutCreateRequest(BaseModel):
     origin_url: str
+    plan_type: str = "monthly"  # "monthly" or "lifetime"
 
 
 # ----------------------------------------------------------------------------
@@ -100,26 +108,33 @@ async def _user_to_out(user: dict) -> UserOut:
     sub = await db.subscriptions.find_one({"user_id": user["user_id"]}, {"_id": 0})
     is_active = False
     status = "inactive"
+    plan_type = None
     if sub:
         status = sub.get("status", "inactive")
-        period_end = sub.get("current_period_end")
+        plan_type = sub.get("plan_type")
         if status == "active":
-            if period_end:
-                if isinstance(period_end, str):
-                    period_end = datetime.fromisoformat(period_end)
-                if period_end.tzinfo is None:
-                    period_end = period_end.replace(tzinfo=timezone.utc)
-                is_active = period_end >= datetime.now(timezone.utc)
-            else:
+            if plan_type == "lifetime":
                 is_active = True
-    return UserOut(
+            else:
+                period_end = sub.get("current_period_end")
+                if period_end:
+                    if isinstance(period_end, str):
+                        period_end = datetime.fromisoformat(period_end)
+                    if period_end.tzinfo is None:
+                        period_end = period_end.replace(tzinfo=timezone.utc)
+                    is_active = period_end >= datetime.now(timezone.utc)
+                else:
+                    is_active = True
+    out = UserOut(
         user_id=user["user_id"],
         email=user["email"],
         name=user.get("name", ""),
         picture=user.get("picture"),
         is_subscribed=is_active,
-        subscription_status=status if is_active else status,
+        subscription_status=status,
+        plan_type=plan_type if is_active else None,
     )
+    return out
 
 
 # ----------------------------------------------------------------------------
@@ -214,12 +229,16 @@ async def create_checkout(
     request: Request,
     user: dict = Depends(get_current_user),
 ):
-    """Create a Stripe Checkout session for a fixed monthly subscription price.
+    """Create a Stripe Checkout session.
 
-    NOTE: We intentionally use a one-time fixed-amount checkout (rather than a price_id)
-    because no Stripe Price has been pre-created. The amount is server-defined to prevent
-    tampering. On payment success we mark the user subscribed for 30 days.
+    plan_type = "monthly" → $1.99 charged, grants 30 days access
+    plan_type = "lifetime" → $20 charged, grants permanent access
     """
+    plan_type = (payload.plan_type or "monthly").lower()
+    if plan_type not in PLAN_PRICES:
+        raise HTTPException(status_code=400, detail="Invalid plan_type")
+    amount = PLAN_PRICES[plan_type]
+
     host_url = str(request.base_url)
     webhook_url = f"{host_url.rstrip('/')}/api/webhook/stripe"
     stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
@@ -231,11 +250,12 @@ async def create_checkout(
     metadata = {
         "user_id": user["user_id"],
         "email": user["email"],
-        "product": "sss_pro_monthly",
+        "product": f"sss_pro_{plan_type}",
+        "plan_type": plan_type,
     }
 
     checkout_request = CheckoutSessionRequest(
-        amount=SUBSCRIPTION_PRICE_USD,
+        amount=amount,
         currency="usd",
         success_url=success_url,
         cancel_url=cancel_url,
@@ -243,14 +263,14 @@ async def create_checkout(
     )
     session = await stripe_checkout.create_checkout_session(checkout_request)
 
-    # Persist the pending transaction
     await db.payment_transactions.insert_one(
         {
             "user_id": user["user_id"],
             "email": user["email"],
             "session_id": session.session_id,
-            "amount": SUBSCRIPTION_PRICE_USD,
+            "amount": amount,
             "currency": "usd",
+            "plan_type": plan_type,
             "metadata": metadata,
             "payment_status": "initiated",
             "status": "open",
@@ -298,7 +318,8 @@ async def subscription_status(
         and status_resp.payment_status == "paid"
         and tx.get("user_id") == user["user_id"]
     ):
-        await _activate_subscription(user["user_id"], checkout_session_id)
+        plan_type = tx.get("plan_type") or "monthly"
+        await _activate_subscription(user["user_id"], checkout_session_id, plan_type)
 
     return {
         "payment_status": status_resp.payment_status,
@@ -308,21 +329,23 @@ async def subscription_status(
     }
 
 
-async def _activate_subscription(user_id: str, session_id: str):
+async def _activate_subscription(user_id: str, session_id: str, plan_type: str = "monthly"):
     now = datetime.now(timezone.utc)
-    period_end = now + timedelta(days=30)
+    update = {
+        "user_id": user_id,
+        "status": "active",
+        "plan_type": plan_type,
+        "current_period_start": now,
+        "last_session_id": session_id,
+        "updated_at": now,
+    }
+    if plan_type == "lifetime":
+        update["current_period_end"] = None  # lifetime never expires
+    else:
+        update["current_period_end"] = now + timedelta(days=30)
     await db.subscriptions.update_one(
         {"user_id": user_id},
-        {
-            "$set": {
-                "user_id": user_id,
-                "status": "active",
-                "current_period_start": now,
-                "current_period_end": period_end,
-                "last_session_id": session_id,
-                "updated_at": now,
-            }
-        },
+        {"$set": update},
         upsert=True,
     )
 
@@ -361,10 +384,11 @@ async def stripe_webhook(request: Request):
             },
         )
         user_id = metadata.get("user_id") if isinstance(metadata, dict) else None
+        plan_type = (metadata.get("plan_type") if isinstance(metadata, dict) else None) or (tx.get("plan_type") if tx else None) or "monthly"
         if not user_id and tx:
             user_id = tx.get("user_id")
         if (not already_paid) and payment_status == "paid" and user_id:
-            await _activate_subscription(user_id, session_id)
+            await _activate_subscription(user_id, session_id, plan_type)
 
     return {"received": True}
 
@@ -374,14 +398,30 @@ async def stripe_webhook(request: Request):
 # ----------------------------------------------------------------------------
 @app.get("/api/subscription/plan")
 async def get_plan():
+    features = [
+        "Unlock NRFI Model with ML predictions",
+        "Unlock NBA Daily Insights",
+        "Unlock Slump Detector",
+        "Daily refreshed data (GitHub Actions overnight)",
+        "Full access to every current & future Pro tool",
+    ]
     return {
         "name": SUBSCRIPTION_NAME,
-        "price_usd": SUBSCRIPTION_PRICE_USD,
-        "interval": "month",
-        "features": [
-            "Full access to NBA & MLB betting systems",
-            "Seasonal tools (Tango Tracker, Slump Detector, Reverse RYP)",
-            "Daily NRFI model & pitcher props",
-            "Laddering tool & NFL power rankings",
+        "plans": [
+            {
+                "id": "monthly",
+                "label": "Monthly",
+                "price_usd": MONTHLY_PRICE_USD,
+                "interval": "month",
+                "tagline": "Cancel anytime",
+            },
+            {
+                "id": "lifetime",
+                "label": "Lifetime",
+                "price_usd": LIFETIME_PRICE_USD,
+                "interval": "one-time",
+                "tagline": "Pay once · never billed again",
+            },
         ],
+        "features": features,
     }
