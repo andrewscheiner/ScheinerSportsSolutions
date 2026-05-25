@@ -340,7 +340,7 @@ def _render_login_screen():
         <div class="sss-hero" data-testid="login-hero">
           <span class="sss-pill">Sports Analytics · Subscription</span>
           <h1>Scheiner <span>Sports Solutions</span></h1>
-          <p>Daily NBA & MLB betting models, NRFI predictions, pitcher props, laddering tools, and seasonal trackers — engineered nightly from MLB Stats, Fangraphs, and ESPN.</p>
+          <p>Daily sports betting models, predictions, prop models, tools, and trackers — engineered with automatic stat updates.</p>
         </div>
         """,
         unsafe_allow_html=True,
@@ -398,7 +398,7 @@ def _render_login_screen():
 
     st.markdown(
         "<p style='color:#788478;font-size:0.8rem;margin-top:1.5rem;'>"
-        "By signing in you agree to bet responsibly. © Andrew Scheiner 2026"
+        "© Andrew Scheiner 2026"
         "</p>",
         unsafe_allow_html=True,
     )
@@ -410,7 +410,7 @@ def _render_paywall(user: dict, token: str, locked_tool: Optional[str] = None):
         "name": "Pro",
         "plans": [
             {"id": "monthly", "label": "Monthly", "price_usd": 1.99, "interval": "month", "tagline": "Cancel anytime"},
-            {"id": "lifetime", "label": "Lifetime", "price_usd": 20.00, "interval": "one-time", "tagline": "Pay once · never billed again"},
+            {"id": "lifetime", "label": "Lifetime", "price_usd": 19.99, "interval": "one-time", "tagline": "Pay once · never billed again"},
         ],
         "features": [],
     }
