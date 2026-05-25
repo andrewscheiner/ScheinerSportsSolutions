@@ -1,0 +1,9 @@
+{
+  "name": "sss-streamlit-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Wrapper that runs the Streamlit app as the frontend on port 3000.",
+  "scripts": {
+    "start": "cd /app && /root/.venv/bin/streamlit run /app/sports-dashboard.py --server.port=3000 --server.address=0.0.0.0 --server.headless=true --server.enableCORS=false --server.enableXsrfProtection=false --browser.gatherUsageStats=false"
+  }
+}

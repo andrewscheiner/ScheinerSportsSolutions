@@ -1,0 +1,42 @@
+{
+  "summary": "Iteration 2 testing complete. Re-seeded test-user-withSub with plan_type='monthly' and created new lifetime test user (session_token=test_session_lifetime_lf1). All 17 backend pytest cases pass (health, /api/auth/me for monthly+lifetime+nosub+invalid+no-auth, /api/auth/session invalid, /api/auth/logout, /api/subscription/plan returns plans=[monthly $1.99, lifetime $20.00] + features, checkout monthly/lifetime/default-monthly/invalid-400/auth-required, /api/subscription/status auth+unknown-id, /api/webhook/stripe 4xx on bad signature). Frontend Streamlit per-tool gating verified end-to-end: non-subscriber dashboard shows ALL 8 tool buttons with 🔒 PRO on 3 Pro tools (NRFI/NBA Daily/Slump) and no badge on 5 free tools; 'Pro tools locked' upgrade banner present; Laddering Tool (free) loads with full data — no paywall; NRFI Report (pro) opens tool-specific paywall with 'UNLOCK NRFI REPORT' hero, monthly $1.99 card, lifetime $20.00 card with BEST VALUE badge, both Subscribe/Buy Lifetime buttons rendered. Monthly subscriber: 0 locked badges, 3 ⭐ PRO badges, sidebar 'PRO · ACTIVE', no upgrade banner, PRO tool loads directly. Lifetime subscriber: sidebar 'PRO · LIFETIME', no banner, all 8 tools with ⭐ PRO badges.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/subscription/status/{id}", "issue": "When session_id is unknown (no Mongo tx row), endpoint still calls Stripe first and may surface a 5xx instead of fast-404. Suggest: check payment_transactions first → 404 if missing, before invoking Stripe."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "(Optional) Add fast-404 in /api/subscription/status/{id} for unknown session_ids before calling Stripe.",
+    "(Optional, carried over) Tighten CORS: allow_origins=['*'] with allow_credentials=True is silently ignored by Starlette. Set explicit origin list."
+  ],
+  "critical_code_review_comments": [
+    "server.py _user_to_out: lifetime branch correctly treats current_period_end=null as active forever — verified end-to-end with seeded lifetime user.",
+    "server.py /api/subscription/checkout: plan_type defaults to 'monthly' and validates against PLAN_PRICES — invalid plan_type returns clean 400.",
+    "server.py /api/webhook/stripe: metadata.plan_type passed through to _activate_subscription (falls back to tx.plan_type then 'monthly'). Webhook signature path is exception-safe → 4xx, never 5xx.",
+    "auth_gate.py _render_paywall: monthly_plan/lifetime_plan lookup uses next() with default None — gracefully handles a single-plan response, good defensive code.",
+    "sports-dashboard.py: per-tool gating is correctly placed *inside* _render_tool_page after the back button, so users can always escape the paywall without losing context. Good UX.",
+    "Streamlit session state survives subscriber/non-subscriber transitions; no auth bypass observed."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py (rewrote for iteration 2 schema: 17 tests)",
+    "/app/test_reports/pytest/pytest_results.xml (regenerated)",
+    "/app/test_reports/iteration_2.json (this file)"
+  ],
+  "success_rate": {"backend": "100% (17/17)", "frontend": "100% on all per-tool gating flows (non-sub / monthly / lifetime)"},
+  "test_credentials": "Three seeded sessions in db sss_db: test_session_noSub_abc (no sub), test_session_withSub_xyz (monthly, plan_type=monthly added in this iteration), test_session_lifetime_lf1 (lifetime, current_period_end=null, NEW in this iteration). Documented behavior matches /app/memory/test_credentials.md (lifetime user is additive).",
+  "seed_data_creation": "Added plan_type='monthly' to existing test-user-withSub subscription. Created new user test-user-lifetime + session test_session_lifetime_lf1 + subscription {status:'active', plan_type:'lifetime', current_period_end:null}. Seed script saved at /tmp/seed2.js.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Iteration 2 changes are fully verified: dual-plan pricing ($1.99 monthly / $20 lifetime), plan_type field on /api/auth/me, lifetime subs with null current_period_end treated as permanent, per-tool subscription gate (5 free tools reachable without sub, 3 pro tools paywalled at click-time), tool-specific paywall hero ('UNLOCK {TOOL}'), sidebar PRO · LIFETIME badge. To re-run backend: pytest /app/backend/tests/backend_test.py -v. To re-verify frontend, hit preview URL with ?session_token=test_session_noSub_abc | test_session_withSub_xyz | test_session_lifetime_lf1. The Stripe webhook with real signed payload can only be tested in a Stripe-integration environment — current 4xx-on-bad-sig is the production-correct fallback.",
+  "rca of the issue": "No defects found in iteration 2 scope. The only minor observation (status endpoint Stripe-before-DB-check) is carried over from iteration 1 and remains optional."
+}
