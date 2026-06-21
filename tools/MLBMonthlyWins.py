@@ -99,7 +99,7 @@ def app():
     #get monthly standings for the current month
     current_month = datetime.now().strftime("%B")
     st.write(f'{current_month} MLB Standings')
-    st.dataframe(get_monthly_standings())
+    st.dataframe(get_monthly_standings(current_month))
 
     #get next month's outlook
     now = datetime.now()
