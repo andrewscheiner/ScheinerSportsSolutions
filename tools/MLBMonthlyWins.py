@@ -97,8 +97,15 @@ def app():
         return standings
     
     #get monthly standings for the current month
-    st.write(datetime.now()) #keep track of when this was last run
-    st.dataframe(get_monthly_standings(datetime.now().strftime("%B")))
+    current_month = datetime.now().strftime("%B")
+    st.write(f'{current_month} MLB Standings')
+    st.dataframe(get_monthly_standings())
 
-    st.write('July Forecast')
-    st.dataframe(get_month_SOS('July'))
+    #get next month's outlook
+    now = datetime.now()
+    year = now.year + (1 if now.month == 12 else 0)
+    month = 1 if now.month == 12 else now.month + 1
+    next_month = datetime(year, month, 1).strftime("%B")
+
+    st.write(f'{next_month} MLB Outlook')
+    st.dataframe(get_month_SOS(next_month))
