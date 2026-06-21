@@ -10,7 +10,10 @@ mlb_teams = [
 ]
 
 # Fetch schedule and record data for all MLB teams
-schedule_records = [schedule_and_record(2026, team) for team in mlb_teams]
+schedule_records = []
+for team in mlb_teams:
+    schedule_records.append(schedule_and_record(2026, team))
+    print(f"Fetched schedule and record for {team} in 2026")
 
 # Concatenate all schedule records into a single DataFrame
 master_schedule = pd.concat(schedule_records, ignore_index=True)
