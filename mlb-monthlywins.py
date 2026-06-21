@@ -2,6 +2,7 @@ import pybaseball as pyb
 from pybaseball import schedule_and_record
 import pandas as pd
 
+pd.options.mode.copy_on_write = False
 mlb_teams = [
     'ARI', 'ATL', 'BAL', 'BOS', 'CHC', 'CHW', 'CIN', 'CLE', 'COL', 'DET',
     'HOU', 'KCR', 'LAA', 'LAD', 'MIA', 'MIL', 'MIN', 'NYM', 'NYY', 'ATH',
