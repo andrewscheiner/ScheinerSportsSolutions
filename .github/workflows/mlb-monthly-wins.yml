@@ -27,7 +27,7 @@ jobs:
             pip install requests pandas pybaseball
       - name: Execute Python Script
         run: |
-            python mlb_monthlywins.py
+            python mlb-monthlywins.py
 
       - name: Commit and push changes
         run: |
