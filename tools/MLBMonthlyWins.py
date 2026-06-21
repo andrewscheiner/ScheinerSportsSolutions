@@ -108,4 +108,4 @@ def app():
     next_month = datetime(year, month, 1).strftime("%B")
 
     st.write(f'{next_month} MLB Outlook')
-    st.dataframe(get_month_SOS(next_month))
+    st.dataframe(get_month_SOS(next_month).reset_index(drop=True))
