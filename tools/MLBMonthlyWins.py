@@ -2,7 +2,12 @@ import pandas as pd
 import streamlit as st
 from datetime import datetime
 
-def warn(msg: str):
+def app():
+
+    st.title("⚾ MLB Monthly Wins")
+    st.markdown("Display current and future MLB monthly wins data for all 30 teams. Updated daily during the season.")
+
+    def warn(msg: str):
         st.markdown(
             f"""
             <div style="
@@ -20,12 +25,6 @@ def warn(msg: str):
             """,
             unsafe_allow_html=True
         )
-
-def app():
-
-    st.title("⚾ MLB Monthly Wins")
-    st.markdown("Display current and future MLB monthly wins data for all 30 teams. Updated daily during the season.")
-
     warn("The most recent data upload was 6/21. Please use caution when making betting decisions using the following results. Please check back soon for updated MLB results.")
 
     #load in data
