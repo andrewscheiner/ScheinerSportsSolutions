@@ -2,10 +2,31 @@ import pandas as pd
 import streamlit as st
 from datetime import datetime
 
+def warn(msg: str):
+        st.markdown(
+            f"""
+            <div style="
+                padding: 18px 20px;
+                background-color: #fff8e6;
+                border-left: 6px solid #e6a700;
+                border-radius: 6px;
+                font-size: 1.05rem;
+                margin-top: 15px;
+                line-height: 1.4;
+            ">
+                <strong style="color:#b07d00;">⚠️ Warning</strong><br>
+                {msg}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
 def app():
 
     st.title("⚾ MLB Monthly Wins")
     st.markdown("Display current and future MLB monthly wins data for all 30 teams. Updated daily during the season.")
+
+    warn("The most recent data upload was 6/21. Please use caution when making betting decisions using the following results. Please check back soon for updated MLB results.")
 
     #load in data
     master_schedule = pd.read_csv(r'data/2026_schedule.csv').reset_index(drop=True)
