@@ -19,7 +19,7 @@ def app():
                 margin-top: 15px;
                 line-height: 1.4;
             ">
-                <strong style="color:#b07d00;">⚠️ Warning</strong><br>
+                <strong style="color:#000000;">⚠️ Warning</strong><br>
                 {msg}
             </div>
             """,
