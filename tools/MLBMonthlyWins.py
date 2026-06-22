@@ -12,7 +12,7 @@ def app():
             f"""
             <div style="
                 padding: 18px 20px;
-                background-color: #fff8e6;
+                background-color: #F5B200;
                 border-left: 6px solid #e6a700;
                 border-radius: 6px;
                 font-size: 1.05rem;
