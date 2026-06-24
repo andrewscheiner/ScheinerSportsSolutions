@@ -32,6 +32,7 @@ for team in mlb_teams:
     # resp = requests.get(url)
     # print(team, resp.status_code)
     # print(resp.text[:500])
+    print(f"FETCHING schedule and record for {team} in 2026")
     schedule_records.append(safe_schedule(2026, team))
     print(f"Fetched schedule and record for {team} in 2026")
 
