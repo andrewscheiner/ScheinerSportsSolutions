@@ -24,7 +24,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-            pip install pandas pybaseball==2.2.7
+            pip install pandas requests pybaseball==2.2.7
       - name: Execute Python Script
         run: |
             python mlb-monthlywins.py
