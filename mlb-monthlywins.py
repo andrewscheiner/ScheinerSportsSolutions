@@ -28,10 +28,10 @@ def safe_schedule(year, team):
 # Fetch schedule and record data for all MLB teams
 schedule_records = []
 for team in mlb_teams:
-    url = f"https://www.baseball-reference.com/teams/{team}/2026-schedule-scores.shtml"
-    resp = requests.get(url)
-    print(team, resp.status_code)
-    print(resp.text[:500])
+    # url = f"https://www.baseball-reference.com/teams/{team}/2026-schedule-scores.shtml"
+    # resp = requests.get(url)
+    # print(team, resp.status_code)
+    # print(resp.text[:500])
     schedule_records.append(safe_schedule(2026, team))
     print(f"Fetched schedule and record for {team} in 2026")
 
